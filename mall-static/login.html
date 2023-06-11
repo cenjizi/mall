@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+
+	<head lang="en">
+		<meta charset="UTF-8">
+		<title>登录</title>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+		<meta name="format-detection" content="telephone=no">
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+		<link rel="stylesheet" href="static/css/amazeui.css" />
+		<link href="static/css/dlstyle.css" rel="stylesheet" type="text/css">
+		<link rel="stylesheet" href="static/css/bootstrap.min.css" />	
+	</head>
+
+	<body>
+
+		<div class="login-boxtitle" style="height: 100px;">
+			<div class="logoBig">
+				<img src="static/images/logo.jpg" style="margin-left: 0px ; height: 100px;">
+			</div>
+		</div>
+
+		<div class="login-banner" >
+			<div class="login-main" >
+				<div class="login-banner-bg"><span></span><img src="static/images/big.jpg" /></div>
+				<div class="login-box" style="margin-top: 20px;" id="container">
+
+					<h3 class="title">登录商城</h3>
+					<h5 :style="colorStyle" id="tips">{{tips}}</h5>
+					<div class="clear"></div>
+
+					<div class="login-form"  style="background: none; margin-top: 15px;">
+						<form>
+							<div class="user-name"  style="margin-top: 20px;">
+								<label for="user"><span class="glyphicon glyphicon-user" aria-hidden="true"></span></label>
+								<input type="text" v-model="username" placeholder="手机号">
+							</div>
+							<div class="user-pass"  style="margin-top: 20px;">
+								<label for="password"><span class="glyphicon glyphicon-lock" aria-hidden="true"></span></label>
+								<input type="password" v-model="password" placeholder="请输入密码">
+							</div>
+						</form>
+					</div>
+
+					<div class="login-links" >
+						<a href="#" class="am-fr">忘记密码</a>
+						<br />
+					</div>
+					<div class="am-cf">
+						<input type="submit" @click="submit" value="登 录" class="am-btn am-btn-primary am-btn-sm">
+					</div>
+					<div class="am-cf">
+						<input type="button" onclick="javascript:window.location.href='register.html'" value="注 册" class="am-btn am-btn-default am-btn-sm">
+					</div>
+					<div class="partner">
+						
+					</div>
+
+				</div>
+			</div>
+		</div>
+
+		<div class="footer ">
+			<div class="footer-hd ">
+
+			</div>
+			<div class="footer-bd ">
+				<p>
+					<a>联系电话：15307426805</a>
+				</p>
+			</div>
+		</div>
+
+		<script type="text/javascript" src="static/js/jquery-1.9.min.js"></script>
+		<script type="text/javascript" src="static/js/vue.js"></script>
+		<script type="text/javascript" src="static/js/axios.min.js"></script>
+		<script type="text/javascript" src="static/js/cookie_utils.js"></script>
+		<script type="text/javascript" src="static/js/baseUrl.js"></script>
+		<script type="text/javascript" src="static/js/utils.js"></script>
+		<script type="text/javascript">
+			var vm = new Vue({
+				el:"#container",
+				data:{
+					username:"",
+					password:"",
+					nickname:"",
+					tips:"",
+					colorStyle:"color:red",
+					returnUrl:null,
+					pid:0,
+					sid:0,
+					num:1
+				},
+				created:function(){
+					//从商品详情页获取跳转到登录页面时，获取提示信息
+					this.tips = getUrlParam("tips");
+					//获取returnUrl,pid,sid
+					this.returnUrl = getUrlParam("returnUrl");
+					this.pid = getUrlParam("pid");
+					this.sid = getUrlParam("sid");
+					this.num = getUrlParam("num");
+				},
+				methods:{
+					submit:function(){
+						if(!checkTelephone(vm.username)){
+							vm.tips = "请正确输入手机号！";
+						}else{
+							if(vm.password == ""){
+								vm.tips = "请输入密码！";
+							}else if(vm.password.length<6 || vm.password.length>12){
+								vm.tips = "密码长度必须为6-12个字符";
+							}else{
+								vm.tips = "";
+								var url = baseUrl + "user/login";
+								axios.get(url,{
+									params:{
+										username:vm.username,
+										password:vm.password
+									}
+								}).then((res)=>{
+									var vo = res.data;
+									if(vo.code == 10000){
+										//将用户信息存进cookie
+										setCookieValue("token",vo.msg);  //token
+										setCookieValue("userId",vo.data.userId);  //用户id
+										setCookieValue("username",vo.data.username);  //用户名
+										setCookieValue("nickname",vo.data.nickname);  //用户昵称
+										setCookieValue("userImg",vo.data.userImg);  //用户头像
+										if(this.returnUrl == null){
+											window.location.href = "index.html";
+										}else{
+											this.returnUrl = this.returnUrl + "?m=1";
+											if(this.pid != null){
+												this.returnUrl = this.returnUrl + "&pid=" + this.pid;
+											}
+											if(this.sid != null){
+												this.returnUrl = this.returnUrl + "&sid=" + this.sid;
+											}
+											if(this.num != null){
+												this.returnUrl = this.returnUrl + "&num=" + this.num;
+											}
+											window.location.href = this.returnUrl;
+										}
+									}else{
+										vm.tips = vo.msg;
+									}
+								});
+							}
+						}
+					}
+				}
+			});
+		</script>
+
+	</body>
+
+</html>

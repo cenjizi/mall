@@ -1,0 +1,439 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>购物车页面</title>
+
+		<link href="static/css/amazeui.css" rel="stylesheet" type="text/css" />
+		<link href="static/css/demo.css" rel="stylesheet" type="text/css" />
+		<link href="static/css/cartstyle.css" rel="stylesheet" type="text/css" />
+		<link href="static/css/optstyle.css" rel="stylesheet" type="text/css" />
+		<!-- 引入 layui.css -->
+		<link rel="stylesheet" href="//unpkg.com/layui@2.6.8/dist/css/layui.css">
+		<!-- 引入 layui.js -->
+		<script src="//unpkg.com/layui@2.6.8/dist/layui.js"></script>
+
+		<script type="text/javascript" src="static/js/jquery.js"></script>
+
+	</head>
+
+	<body>
+
+		<div id="container">
+		<!--顶部导航条 -->
+		<div class="am-container header">
+			<ul class="message-l">
+				<div class="topMessage">
+					<div class="menu-hd" v-if="isLogin">
+						{{nickname}},欢迎您
+					</div>
+					<div class="menu-hd" v-else>
+						<a href="#" target="_top" class="h">亲，请登录 </a>
+						<a href="#" target="_top"> 免费注册</a>
+					</div>
+				</div>
+			</ul>
+			<ul class="message-r">
+				<div class="topMessage home">
+					<div class="menu-hd"><a href="index.html" target="_top" class="h">商城首页</a></div>
+				</div>
+				<div class="topMessage my-shangcheng">
+					<div class="menu-hd MyShangcheng"><a href="user-center.html" target="_top">个人中心</a></div>
+				</div>
+				<div class="topMessage mini-cart">
+					<div class="menu-hd"><a id="mc-menu-hd" href="#" target="_top">购物车</a></div>
+				</div>
+			</ul>
+			</div>
+
+			<!--顶部-->
+			<div class="nav white">
+				<div class="logoBig">
+					<a href="index.html"><img src="static/images/logo.jpg" style="margin-left: 0px"></a>
+				</div>
+			</div>
+
+			<div class="clear"></div>
+
+			<!--购物车 -->
+			<div class="concent">
+				<div id="cartTable">
+					<div class="cart-table-th">
+						<div class="wp">
+							<div class="th th-chk">
+								<div id="J_SelectAll1" class="select-all J_SelectAll">
+
+								</div>
+							</div>
+							<div class="th th-item">
+								<div class="td-inner">商品信息</div>
+							</div>
+							<div class="th th-price">
+								<div class="td-inner">单价</div>
+							</div>
+							<div class="th th-amount">
+								<div class="td-inner">数量</div>
+							</div>
+							<div class="th th-sum">
+								<div class="td-inner">金额</div>
+							</div>
+							<div class="th th-op">
+								<div class="td-inner">操作</div>
+							</div>
+						</div>
+					</div>
+					<div class="clear"></div>
+					<div class="clear"></div>
+
+					<template v-for="sc,index in shopcarts">
+					<tr class="item-list">	
+						<div class="bundle  bundle-last ">
+							<div class="clear"></div>
+							<div class="bundle-main">
+								<ul class="item-content clearfix">
+									<li class="td td-chk">
+										<div class="cart-checkbox ">
+											<input class="check" id="J_CheckBox_170769542747" v-model="opts" :value="index" type="checkbox">
+											<label for="J_CheckBox_170769542747"></label>
+										</div>
+									</li>
+									<li class="td td-item">
+										<div class="item-pic">
+											<a :href="'introduction.html?pid='+sc.productId" :data-title="sc.productName" class="J_MakePoint" data-point="tbcart.8.12">
+												<img :src="'static/images/'+sc.productImg" height="70" class="itempic J_ItemImg"></a>
+										</div>
+										<div class="item-info">
+											<div class="item-basic-info">
+												<a :href="'introduction.html?pid='+sc.productId" target="_blank" :title="sc.productName" class="item-title J_MakePoint" data-point="tbcart.8.11">
+													{{sc.productName}}<br>&nbsp;&nbsp;{{sc.skuName}}</a>
+											</div>
+										</div>
+									</li>
+									<li class="td td-info">
+										<div class="item-props item-props-can">
+											<span class="sku-line">{{sc.skuProps}}</span>
+											<i class="theme-login am-icon-sort-desc"></i>
+										</div>
+									</li>
+									<li class="td td-price">
+										<div class="item-price price-promo-promo">
+											<div class="price-content">
+												<div class="price-line">
+													<em class="price-original">{{sc.originalPrice}}</em>
+												</div>
+												<div class="price-line">
+													<em class="J_Price price-now" tabindex="0">{{sc.sellPrice}}</em>
+												</div>
+											</div>
+										</div>
+									</li>
+									<!-- 数量 -->
+									<li class="td td-amount">
+										<div class="amount-wrapper ">
+											<div class="item-amount ">
+												<div class="sl">
+													<input class="min am-btn" name="" type="button" value="-" :data-id="index" @click="changeNum(-1)"/>
+													<input id="text_box" type="text" v-model="sc.cartNum" style="width:30px;" />
+													<input class="add am-btn" name="" type="button" value="+" :data-id="index" @click="changeNum(1)"/>
+												</div>
+											</div>
+										</div>
+									</li>
+									<li class="td td-sum">
+										<div class="td-inner">
+											<em tabindex="0" class="J_ItemSum number">{{sc.sellPrice*sc.cartNum}}</em>
+										</div>
+									</li>
+									<li class="td td-op">
+										<div class="td-inner">
+											<!-- <a title="移入收藏夹" class="btn-fav" href="#">
+                  								移入收藏夹</a> -->
+											<a data-point-url="#" class="delete" :data-id="sc.cartId" @click="deleteProduct(1)">
+                  								删除</a>
+										</div>
+									</li>
+								</ul>
+							</div>
+						</div>
+					</tr>
+					</template>
+				</div>
+				<div class="clear"></div>
+
+				<div class="float-bar-wrapper">
+					<div id="J_SelectAll2" class="select-all J_SelectAll">
+						<div class="cart-checkbox">
+							<input class="check-all check" id="J_SelectAllCbx2" v-model="selectAll" value="true" type="checkbox">
+							<!-- <input class="check-all check" id="J_SelectAllCbx2" name="select-all" value="true" type="checkbox"> -->
+							<label for="J_SelectAllCbx2"></label>
+						</div>
+						<span>全选</span>
+					</div>
+					<div class="operations">
+						<a href="#" hidefocus="true" class="deleteAll"  @click="deleteProduct(10)">删除</a>
+						<!-- <a href="#" hidefocus="true" class="J_BatchFav">移入收藏夹</a> -->
+					</div>
+					<div class="float-bar-right">
+
+						<template v-if="selectAll">
+							<div class="amount-sum">
+								<span class="txt">已选商品</span>
+								<em id="J_SelectedItemsCount">{{shopcarts.length}}</em><span class="txt">件</span>
+								<div class="arrow-box">
+									<span class="selected-items-arrow"></span>
+									<span class="arrow"></span>
+								</div>
+							</div>
+							<div class="price-sum">
+								<span class="txt">合计:</span>
+								<strong class="price">¥<em id="J_Total">{{allTotalPrice}}</em></strong>
+							</div>
+						</template>
+
+						<template v-else>
+							<div class="amount-sum">
+								<span class="txt">已选商品</span>
+								<em id="J_SelectedItemsCount">{{opts.length}}</em><span class="txt">件</span>
+								<div class="arrow-box">
+									<span class="selected-items-arrow"></span>
+									<span class="arrow"></span>
+								</div>
+							</div>
+							<div class="price-sum">
+								<span class="txt">合计:</span>
+								<strong class="price">¥<em id="J_Total">{{totalPrice}}</em></strong>
+							</div>
+						</template>
+						<div class="btn-area" @click="gotoOrderAdd">
+							<!-- <a  id="J_Go" class="submit-btn submit-btn-disabled" aria-label="请注意如果没有选择宝贝，将无法结算"> -->
+								<span>结&nbsp;算</span></a>
+						</div>
+					</div>
+
+				</div>
+
+				<div class="footer ">
+					<div class="footer-hd ">
+						<p>
+							<a href="# ">订单</a>
+							<b>|</b>
+							<a href="# ">物流</a>
+							<b>|</b>
+							<a href="http://www.hatu.edu.cn/index.html">关于湖应</a>
+						</p>
+					</div>
+					<div class="footer-bd ">
+						<p>
+							<a>版权所有，侵权必究</a>
+							<b>|</b>
+							<a>联系电话：15307426805</a>
+						</p>
+					</div>
+				</div>
+
+			</div>
+
+		</div>
+		<script type="text/javascript" src="static/js/vue.js"></script>
+		<script type="text/javascript" src="static/js/axios.min.js"></script>
+		<script type="text/javascript" src="static/js/cookie_utils.js"></script>
+		<script type="text/javascript" src="static/js/baseUrl.js"></script>
+		<script type="text/javascript">
+			//弹窗
+			var layer;
+			layui.use('layer', function(){
+				layer = layui.layer;
+			});
+
+			var vm = new Vue({
+				el:"#container",
+				data:{
+					token:"",
+					username:"",
+					nickname:"",
+					userId:"",
+					isLogin:false,
+					shopcarts:[],
+					opts:[],
+					totalPrice:0,
+					selectAll:false,
+					allTotalPrice:0  //全选时的总价
+				},
+				watch:{
+					opts:function(){
+						this.totalPrice = 0;
+						for(var i=0; i<this.opts.length;i++){
+							this.totalPrice = this.shopcarts[this.opts[i]].sellPrice *
+												this.shopcarts[this.opts[i]].cartNum + this.totalPrice;
+						}
+					},
+				},
+				created:function(){
+					this.token = getCookieValue("token");
+					this.nickname = getCookieValue("nickname");
+					if(this.token != null && this.token != "") {
+						this.username = getCookieValue("username");
+						this.userId = getCookieValue("userId");
+						this.isLogin = true;
+						axios({
+							method:"get",
+							url:baseUrl + "shopcart/list",
+							headers:{
+								token:this.token
+							},
+							params:{
+								userId:this.userId
+							}
+						}).then((res)=>{
+							if(res.data.code == 20002 || res.data.code == 20001){
+								//token过期或不合法
+								var loginUrl = "login.html?tips=请先登录!&returnUrl=shopcart.html";
+								window.location.href = encodeURI(loginUrl);
+							}else{
+								//用户已登录
+								this.shopcarts = res.data.data;
+								for (var i=0; i<this.shopcarts.length; i++){
+									this.allTotalPrice = this.allTotalPrice + this.shopcarts[i].sellPrice *
+														this.shopcarts[i].cartNum;
+								}
+							}
+						});
+					}else{
+						var loginUrl = "login.html?tips=请先登录!&returnUrl=shopcart.html";
+						window.location.href = encodeURI(loginUrl);
+					}
+				},
+				methods:{
+					//商品数量加减
+					changeNum:function (m) {
+						var index = event.srcElement.dataset.id;
+						if (m==-1 && this.shopcarts[index].cartNum>1){//代表减法
+							this.shopcarts[index].cartNum = parseInt(this.shopcarts[index].cartNum) - 1;
+						}else if(m == 1){
+							this.shopcarts[index].cartNum = parseInt(this.shopcarts[index].cartNum) + 1;
+						}
+						//请求购物车修改接口
+						var cid = this.shopcarts[index].cartId;
+						var cnum = this.shopcarts[index].cartNum;
+						var url = baseUrl + "shopcart/update/" + cid + "/" + cnum;
+						axios({
+							url:url,
+							method:"put",
+							headers:{
+								token:this.token
+							}
+						}).then((res)=>{
+							if(res.data.code == 10000){
+								this.totalPrice = 0;
+								this.allTotalPrice = 0;
+								for(var i=0; i<this.opts.length;i++){
+									this.totalPrice = this.shopcarts[this.opts[i]].sellPrice *
+														this.shopcarts[this.opts[i]].cartNum + this.totalPrice;
+									console.log(this.totalPrice);
+								}
+								for (var i=0; i<this.shopcarts.length; i++){
+									this.allTotalPrice = this.allTotalPrice + this.shopcarts[i].sellPrice *
+														this.shopcarts[i].cartNum;
+								}
+							}
+						});
+					},
+					//添加商品至订单
+					gotoOrderAdd:function(){
+						//如果已选中商品或已全选则进行结算
+						if(this.opts.length != 0 || this.selectAll){
+							//1.获取选择购物车记录的id
+							var cids = "";
+							if(this.selectAll){
+								//如果全选则获取所有id
+								for (var i=0; i<this.shopcarts.length; i++){
+									if(i != this.shopcarts.length-1){
+										cids = cids +this.shopcarts[i].cartId + ",";
+									}else{
+										cids = cids +this.shopcarts[i].cartId;
+									}
+								}
+							}else{
+								//如果没有全选则已选中的id
+								for (var i=0; i<this.opts.length; i++){
+									if(i != this.opts.length-1){
+										cids = cids +this.shopcarts[this.opts[i]].cartId + ",";
+									}else{
+										cids = cids +this.shopcarts[this.opts[i]].cartId;
+									}
+								}
+							}
+							//2.跳转到order-add.html
+							window.location.href = "order-add.html?cids=" + cids;
+							this.selectAll = false;
+						}else{
+							layer.msg("请选择商品!");
+						}
+					},
+
+					//删除购物车中的商品
+					deleteProduct:function(m){
+						var cids = "";
+						if(m==1){
+							//如果单击“操作”列下的删除
+							cids = event.srcElement.dataset.id;
+						}else{
+							//如果单击“全选”旁的删除
+							if(this.selectAll == true){
+								for (var i=0; i<this.shopcarts.length; i++){
+									if(i != this.shopcarts.length-1){
+										cids = cids +this.shopcarts[i].cartId + ",";
+									}else{
+										cids = cids +this.shopcarts[i].cartId;
+									}
+								}
+							}else{
+								layer.msg("未全选");
+							}
+						}
+						if(cids != ""){
+							var url = baseUrl + "shopcart/deletebycids/";
+							console.log(cids);
+							axios({
+								method:"delete",
+								url:url,
+								headers:{
+									token:this.token
+								},
+								params:{
+									cids:cids
+								}
+							}).then((res)=>{
+								if(res.data.code == 10000){
+									axios({
+										method:"get",
+										url:baseUrl + "shopcart/list",
+										headers:{
+											token:this.token
+										},
+										params:{
+											userId:this.userId
+										}
+									}).then((res)=>{
+											this.shopcarts = res.data.data;
+											this.selectAll = false;
+									});
+								}else{
+									//删除失败
+									layer.msg("商品删除失败");
+								}
+							});
+						}else{
+							//不用处理
+						}
+					}
+				}
+			});
+		</script>
+
+	</body>
+
+</html>

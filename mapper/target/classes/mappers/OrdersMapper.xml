@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kzh.dao.OrdersMapper">
+  <resultMap id="BaseResultMap" type="com.kzh.entity.Orders">
+    <id column="order_id" jdbcType="VARCHAR" property="orderId" />
+    <result column="user_id" jdbcType="VARCHAR" property="userId" />
+    <result column="untitled" jdbcType="VARCHAR" property="untitled" />
+    <result column="receiver_name" jdbcType="VARCHAR" property="receiverName" />
+    <result column="receiver_mobile" jdbcType="VARCHAR" property="receiverMobile" />
+    <result column="receiver_address" jdbcType="VARCHAR" property="receiverAddress" />
+    <result column="total_amount" jdbcType="DECIMAL" property="totalAmount" />
+    <result column="actual_amount" jdbcType="INTEGER" property="actualAmount" />
+    <result column="pay_type" jdbcType="INTEGER" property="payType" />
+    <result column="order_remark" jdbcType="VARCHAR" property="orderRemark" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="delivery_type" jdbcType="VARCHAR" property="deliveryType" />
+    <result column="delivery_flow_id" jdbcType="VARCHAR" property="deliveryFlowId" />
+    <result column="order_freight" jdbcType="DECIMAL" property="orderFreight" />
+    <result column="delete_status" jdbcType="INTEGER" property="deleteStatus" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="pay_time" jdbcType="TIMESTAMP" property="payTime" />
+    <result column="delivery_time" jdbcType="TIMESTAMP" property="deliveryTime" />
+    <result column="flish_time" jdbcType="TIMESTAMP" property="flishTime" />
+    <result column="cancel_time" jdbcType="TIMESTAMP" property="cancelTime" />
+    <result column="close_type" jdbcType="INTEGER" property="closeType" />
+  </resultMap>
+
+  <resultMap id="OrdersVOMap" type="com.kzh.entity.OrdersVO">
+    <id column="order_id" jdbcType="VARCHAR" property="orderId" />
+    <result column="user_id" jdbcType="VARCHAR" property="userId" />
+    <result column="untitled" jdbcType="VARCHAR" property="untitled" />
+    <result column="receiver_name" jdbcType="VARCHAR" property="receiverName" />
+    <result column="receiver_mobile" jdbcType="VARCHAR" property="receiverMobile" />
+    <result column="receiver_address" jdbcType="VARCHAR" property="receiverAddress" />
+    <result column="total_amount" jdbcType="DECIMAL" property="totalAmount" />
+    <result column="actual_amount" jdbcType="INTEGER" property="actualAmount" />
+    <result column="pay_type" jdbcType="INTEGER" property="payType" />
+    <result column="order_remark" jdbcType="VARCHAR" property="orderRemark" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="delivery_type" jdbcType="VARCHAR" property="deliveryType" />
+    <result column="delivery_flow_id" jdbcType="VARCHAR" property="deliveryFlowId" />
+    <result column="order_freight" jdbcType="DECIMAL" property="orderFreight" />
+    <result column="delete_status" jdbcType="INTEGER" property="deleteStatus" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="pay_time" jdbcType="TIMESTAMP" property="payTime" />
+    <result column="delivery_time" jdbcType="TIMESTAMP" property="deliveryTime" />
+    <result column="flish_time" jdbcType="TIMESTAMP" property="flishTime" />
+    <result column="cancel_time" jdbcType="TIMESTAMP" property="cancelTime" />
+    <result column="close_type" jdbcType="INTEGER" property="closeType" />
+    <collection property="orderItems" column="order_id" select="com.kzh.dao.OrderItemMapper.listOrderItemsByOrderId"/>
+  </resultMap>
+  <select id="selectOrders" resultMap="OrdersVOMap">
+    select
+    order_id,user_id,untitled,receiver_name, receiver_mobile,receiver_address,
+    total_amount, actual_amount,pay_type,order_remark,status,delivery_type,
+    delivery_flow_id,order_freight,delete_status,create_time,
+    update_time,pay_time,delivery_time, flish_time,cancel_time,close_type
+    from orders
+    where user_id=#{userId}
+    <if test="status != null">
+      and status=#{status}
+    </if>
+    limit #{start},#{limit}
+  </select>
+
+</mapper>

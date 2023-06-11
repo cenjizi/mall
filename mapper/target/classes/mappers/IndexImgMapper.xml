@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kzh.dao.IndexImgMapper">
+  <resultMap id="BaseResultMap" type="com.kzh.entity.IndexImg">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="img_id" jdbcType="VARCHAR" property="imgId" />
+    <result column="img_url" jdbcType="VARCHAR" property="imgUrl" />
+    <result column="prod_id" jdbcType="VARCHAR" property="prodId" />
+    <result column="category_id" jdbcType="VARCHAR" property="categoryId" />
+    <result column="index_type" jdbcType="INTEGER" property="indexType" />
+    <result column="seq" jdbcType="INTEGER" property="seq" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+
+  <!--public List<IndexImg> listIndexImgs();-->
+  <select id="listIndexImgs" resultMap="BaseResultMap">
+    select img_id,
+           img_url,
+           prod_id,
+           category_id,
+           index_type,
+           seq,
+           status,
+           create_time,
+           update_time
+    from index_img
+    where status=1
+    order by seq
+  </select>
+</mapper>

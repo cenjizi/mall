@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kzh.dao.UserAddrMapper">
+  <resultMap id="BaseResultMap" type="com.kzh.entity.UserAddr">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="addr_id" jdbcType="VARCHAR" property="addrId" />
+    <result column="user_id" jdbcType="VARCHAR" property="userId" />
+    <result column="receiver_name" jdbcType="VARCHAR" property="receiverName" />
+    <result column="receiver_mobile" jdbcType="VARCHAR" property="receiverMobile" />
+    <result column="province" jdbcType="VARCHAR" property="province" />
+    <result column="city" jdbcType="VARCHAR" property="city" />
+    <result column="area" jdbcType="VARCHAR" property="area" />
+    <result column="addr" jdbcType="VARCHAR" property="addr" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="common_addr" jdbcType="INTEGER" property="commonAddr" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <update id="updateAddrById" parameterType="com.kzh.entity.UserAddr">
+    UPDATE user_addr
+    SET receiver_name = #{userAddr.receiverName},
+        receiver_mobile = #{userAddr.receiverMobile},
+        province = #{userAddr.province},
+        city = #{userAddr.city},
+        area = #{userAddr.area},
+        addr = #{userAddr.addr},
+        status = #{userAddr.status},
+        common_addr = #{userAddr.commonAddr},
+        update_time = #{userAddr.updateTime}
+    WHERE addr_id = #{userAddr.addrId}
+  </update>
+
+</mapper>

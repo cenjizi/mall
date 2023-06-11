@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0,maximum-scale=1.0, user-scalable=0">
+
+		<title>锋迷商城 - 用户中心</title>
+		<link rel="shortcut icon" href="/img/foodie.ico">
+
+		<link href="static/css/admin.css" rel="stylesheet" type="text/css">
+		<link href="static/css/amazeui.css" rel="stylesheet" type="text/css">
+		<link href="static/css/personal.css" rel="stylesheet" type="text/css">
+		<link href="static/css/systyle.css" rel="stylesheet" type="text/css">
+
+	</head>
+
+	<body>
+		<div id="div1">
+		<!--顶部导航条 -->
+		<div class="am-container header">
+			<ul class="message-l">
+				<div class="topMessage">
+					<div class="menu-hd">
+						<div class="logoBig">
+							<a href="index.html">
+							<li><img src="static/images/logo.jpg" style="height: 35px;"/></li>
+							</a>
+						</div>
+					</div>
+				</div>
+			</ul>
+			<ul class="message-r">
+				<div class="topMessage home">
+					<div class="menu-hd"><a href="index.html" target="_top" class="h">商城首页</a></div>
+				</div>
+				<div class="topMessage my-shangcheng">
+					<div class="menu-hd MyShangcheng"><a href="user-center.html" target="_top">个人中心</a></div>
+				</div>
+				<div class="topMessage mini-cart">
+					<div class="menu-hd"><a id="mc-menu-hd" href="shopcart.html" target="_top">购物车</a></div>
+				</div>
+			</ul>
+		</div>
+		
+		
+		<div id="center">
+			<b class="line"></b>
+			<div class="center">
+				<div class="col-main">
+					<div class="main-wrap">
+						<div class="wrap-left">
+							<div class="wrap-list">
+								<div class="m-user">
+									<div class="m-bg"></div>
+									<div class="m-userinfo">
+										<div class="m-baseinfo">
+											<a href="/userinfo.html"><img :src="'static/'+userImg"></a> <em class="s-name">用户名：{{username}}</em></div>
+									</div>
+								</div>
+								
+								<iframe name="mainFrame" width="100%" height="600" src="user-orderlist.html" scrolling="no" frameborder="0"></iframe>
+							</div>
+						</div>
+					</div>
+				<div class="footer">
+					<div class="footer-hd ">
+						<p>
+							<a href="# ">订单</a>
+							<b>|</b>
+							<a href="# ">物流</a>
+							<b>|</b>
+							<a href="http://www.hatu.edu.cn/index.html">关于湖应</a>
+						</p>
+					</div>
+					<div class="footer-bd ">
+						<p>
+							<a>版权所有，侵权必究</a>
+							<b>|</b>
+							<a>联系电话：15307426805</a>
+						</p>
+					</div>
+				</div>
+				</div>
+				
+				<aside class="menu">
+					<ul>
+						<li class="person active"><span style="font-weight: bold;"><a href="/index.html">用户中心</a></span></li>
+						<li class="person">
+							<a href="/#">个人资料</a>
+							<ul>
+								<li>
+									<a href="user-info.html" target="mainFrame">我的信息</a>
+								</li>
+								<li>
+									<a href="user-address.html"  target="mainFrame">收货地址</a>
+								</li>
+							</ul>
+						</li>
+						<li class="person">
+							<a href="/#">我的交易</a>
+							<ul>
+								<li>
+									<a href="user-orderlist.html"  target="mainFrame">订单管理</a>
+								</li>
+								<li>
+									<a href="user-comment.html"  target="mainFrame">我的评价</a>
+								</li>
+							</ul>
+						</li>
+					</ul>
+				</aside>
+				
+			</div>
+		</div>
+		</div>
+		<script type="text/javascript" src="static/js/vue.js" ></script>
+		<script type="text/javascript" src="static/js/axios.min.js" ></script>
+		<script type="text/javascript" src="static/js/utils.js" ></script>
+		<script type="text/javascript" src="static/js/baseUrl.js" ></script>
+		<script type="text/javascript" src="static/js/cookie_utils.js" ></script>
+		<script type="text/javascript">
+			new Vue({
+				el:"#div1",
+				data:{
+					token:"",
+					username:"",
+					userImg:""
+				},
+				created:function(){
+					//从cookie中获取用户信息（token、用户id、用户名、头像）
+					this.token = getCookieValue("token");
+					if(this.token == null){
+						window.location.href = "login.html?returnUrl=user-center.html";
+					}else{
+						//如果登录过期需要重新登录，创建一个校验用户登录的接口，通过请求这个接口进行token的检验
+						// user/check
+						var url1 = baseUrl+"user/check";
+						axios({
+							url:url1,
+							method:"get",
+							headers:{
+								token:this.token
+							}
+						}).then((res)=>{
+							if(res.data.code == 2000){
+								//token校验通过
+								this.username  = getCookieValue("username");
+								this.userImg = getCookieValue("userImg");
+							}else{
+								window.location.href = "login.html?returnUrl=user-center.html";
+							}
+						});
+					}
+					
+				}
+			});
+		</script>
+
+	</body>
+
+</html>

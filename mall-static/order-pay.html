@@ -1,0 +1,114 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>购物车页面</title>
+
+		<link href="static/css/amazeui.css" rel="stylesheet" type="text/css" />
+		<link href="static/css/demo.css" rel="stylesheet" type="text/css" />
+		<link href="static/css/cartstyle.css" rel="stylesheet" type="text/css" />
+		<link href="static/css/optstyle.css" rel="stylesheet" type="text/css" />
+
+		<script type="text/javascript" src="static/js/jquery.js"></script>
+
+	</head>
+
+	<body>
+		<div id="container">
+			<!--顶部导航条 -->
+			<div class="am-container header">
+			<ul class="message-l">
+				<div class="topMessage">
+					<div class="menu-hd">
+						{{nickname}},欢迎您
+					</div>
+				</div>
+			</ul>
+			<ul class="message-r">
+				<div class="topMessage home">
+					<div class="menu-hd"><a href="index.html" target="_top" class="h">商城首页</a></div>
+				</div>
+				<div class="topMessage my-shangcheng">
+					<div class="menu-hd MyShangcheng"><a href="user-center.html" target="_top">个人中心</a></div>
+				</div>
+				<div class="topMessage mini-cart">
+					<div class="menu-hd"><a id="mc-menu-hd" href="shopcart.html" target="_top">购物车</a></div>
+				</div>
+			</ul>
+			</div>
+
+			<!--顶部-->
+			<div class="nav white">
+				<div class="logoBig">
+					<a href="index.html"><img src="static/images/logo.jpg" style="margin-left: 0px"></a>
+				</div>
+			</div>
+
+			<div class="clear"></div>
+
+		
+			<div style="background: lightgrey; height: 600px; margin-top: 40px; padding: 15px;">
+				<div style="width:65%; background: white; height: 540px; margin: auto; padding-left: 50px;">
+					<p>&nbsp;</p>
+					<p>&nbsp;</p>
+					<h3>订单编号：{{orderInfo.orderId}}</h3>
+					<p>&nbsp;</p>
+					<h3>订单金额：{{orderInfo.totalPrice}}</h3>
+					<hr/>
+					<div id="div1">
+						<div id="payQrcodeDiv" style="width: 200px;height: 200px;"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script type="text/javascript" src="static/js/cookie_utils.js" ></script>
+		<script type="text/javascript" src="static/js/vue.js" ></script>
+		<script type="text/javascript" src="static/js/axios.min.js" ></script>
+		<script type="text/javascript" src="static/js/baseUrl.js" ></script>
+		<script type="text/javascript" src="static/js/qrcode.min.js" ></script>
+		<script type="text/javascript">
+			new Vue({
+				el:"#container",
+				data:{
+					orderInfo:{},
+					nickname:""
+				},
+				created:function(){
+					this.nickname = getCookieValue("nickname");
+					var jsonstr = localStorage.getItem("orderInfo");
+					if(jsonstr != null){
+						localStorage.removeItem("orderInfo");
+					}
+					this.orderInfo = eval("(" +jsonstr + ")");
+				},
+				mounted:function(){
+					//渲染支付二维码
+					var qrcode = new QRCode($("#payQrcodeDiv")[0],{
+						width:200,
+						height:200
+					});
+					qrcode.makeCode(this.orderInfo.payUrl);
+
+					var webSocketUrl = wsUrl + "webSocket/" + this.orderInfo.orderId;
+					//前端发送websocket连接请求建立长连接
+					var websocket = new WebSocket(webSocketUrl);
+					//只要后端通过websocket向此连接发送消息就会触发onmessage事件
+					websocket.onmessage = function(event){
+						var msg = event.data;
+						if(msg == "1"){
+							$("#div1").html("<label style='font-size: 20px; color: green'>订单支付完成！5秒后自动跳转到首页</label>");
+							setTimeout(function(){
+								window.location.href = "login.html";
+							},5000)
+						}
+					}
+				},
+			});
+		</script>
+		
+	</body>
+
+</html>

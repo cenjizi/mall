@@ -1,0 +1,420 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>商城首页</title>
+
+		<link href="static/css/amazeui.css" rel="stylesheet" type="text/css" />
+		<link href="static/css/admin.css" rel="stylesheet" type="text/css" />
+		<link href="static/css/demo.css" rel="stylesheet" type="text/css" />
+		<link href="static/css/hmstyle.css" rel="stylesheet" type="text/css"/>
+		<link href="static/css/skin.css" rel="stylesheet" type="text/css" />
+		<script src="static/js/jquery.min.js"></script>
+		<script src="static/js/amazeui.min.js"></script>
+		
+	</head>
+
+	<body>
+		<div id="c1">
+		<div class="hmtop" >
+			<!--顶部导航条 -->
+			<div class="am-container header">
+				<ul class="message-l">
+					<div class="topMessage" >
+						<div class="menu-hd" v-if="isLogin">
+							{{nickname}},欢迎您
+						</div>
+						<div class="menu-hd" v-else>
+							<a href="login.html" target="_top" class="h">亲，请登录 </a>
+							<a href="register.html" target="_top"> 免费注册</a>
+						</div>
+					</div>
+				</ul>
+				<ul class="message-r">
+					<div class="topMessage home">
+						<div class="menu-hd"><a href="index.html" target="_top" class="h">商城首页</a></div>
+					</div>
+					<div class="topMessage my-shangcheng">
+						<div class="menu-hd MyShangcheng"><a href="user-center.html" target="_top">个人中心</a></div>
+					</div>
+					<div class="topMessage mini-cart">
+						<div class="menu-hd"><a id="mc-menu-hd" href="shopcart.html" target="_top">购物车</a></div>
+					</div>
+				</ul>
+				</div>
+
+				<!--悬浮搜索框-->
+
+				<div class="nav white">
+
+					<div class="logoBig">
+						<a href="index.html"><img src="static/images/logo.jpg" style="margin-left: 0px"></a>
+					</div>
+
+					<div class="search-bar pr">
+						<form action="search.html">
+							<input id="searchInput" v-model="keyword" type="text" placeholder="搜索" autocomplete="off">
+							<input id="ai-topsearch" class="submit am-btn" value="搜索" index="1" type="button" @click="toSearch">
+						</form>
+					</div>
+				</div>
+
+				<div class="clear"></div>
+			</div>
+			<div class="banner">
+                      <!--轮播 -->
+						<div class="am-slider am-slider-default scoll" data-am-flexslider id="demo-slider-0">
+							<ul class="am-slides">
+								<li v-for="img,index in images" :class="'banner'+(index+1)">
+									<a  href="search.html"><img :src="'static/images/'+img.imgUrl"/></a>
+								</li>
+							</ul>
+						</div>
+						<div class="clear"></div>
+			</div>
+			<div class="shopNav">
+				<div class="slideall">
+					
+					   <div class="long-title"><span class="all-goods">全部分类</span></div>
+		        				
+						<!--分类列表-->
+						<div id="nav" class="navfull">
+							<div class="area clearfix">
+								<div class="category-content" id="guide_2">
+									
+									<div class="category">
+										<ul class="category-list" id="js_climit_li" v-for="c1 in categories">
+											<li class="appliance js_toggle relative">
+												<div class="category-info">
+													<h3 class="category-name b-category-name"><i><img :src="'static/images/'+c1.categoryIcon"></i><a class="ml-22" :title="c1.categoryName">{{c1.categoryName}}</a></h3>
+													<em>&gt;</em></div>
+												<div class="menu-item menu-in top">
+													<div class="area-in">
+														<div class="area-bg">
+															<div class="menu-srot">
+																<div class="sort-side">
+																	<dl class="dl-sort" v-for="c2 in c1.categories">
+																		<dt><span :title="c2.categoryName">{{c2.categoryName}}</span></dt>
+																		<dd v-for="c3 in c2.categories"><a :title="c3.categoryName" :href="'search.html?cid='+c3.categoryId+'&cname='+c3.categoryName"><span>{{c3.categoryName}}</span></a></dd>
+																	</dl>
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>
+											<b class="arrow"></b>	
+											</li>
+										</ul>
+									</div>
+								</div>
+
+							</div>
+						</div>
+						
+					<!--走马灯 -->
+					<div class="marqueen">
+						<span class="marqueen-title">商城头条</span>
+						<div class="demo">
+							<ul>
+								<li class="title-first"><a target="_blank">
+									<!-- <img src="static/images/TJ2.jpg"></img> -->
+									<span>[特惠]</span>商城爆品
+								</a></li>
+								<li class="title-first"><a target="_blank">
+									<span>[公告]</span>商城2023年6月更新日志
+							    </a></li>
+							    
+								<div class="mod-vip">
+									<div class="m-baseinfo" v-if="isLogin">
+										<a href="user-center.html">
+											<img :src="'static/'+userImg">
+										</a>
+										<em>
+											hi,<span class="s-name">{{nickname}}</span>
+											<a href="user-center.html"><p>进入个人中心</p></a>
+										</em>
+									</div>
+
+									<div class="m-baseinfo" v-else>
+										<a class="am-btn-warning btn" href="login.html">登录</a>
+										<a class="am-btn-warning btn" href="register.html">注册</a>
+									</div>
+
+									<div class="clear"></div>
+								</div>
+								<div>
+									<li><a target="_blank"><span>[特惠]</span>新用户购买打8折！</a></li>
+									<li><a target="_blank"><span>[公告]</span>欢迎欧莱雅入驻商城</a></li>
+									<li><a target="_blank"><span>[活动]</span>邀请得好礼！</a></li>
+								</div>
+							</ul>
+                        	<div><img src="static/images/advTip.jpg"/></div>
+						</div>
+					</div>
+					<div class="clear"></div>
+				</div>
+				<script type="text/javascript">
+					if ($(window).width() < 640) {
+						function autoScroll(obj) {
+							$(obj).find("ul").animate({
+								marginTop: "-39px"
+							}, 500, function() {
+								$(this).css({
+									marginTop: "0px"
+								}).find("li:first").appendTo(this);
+							})
+						}
+						$(function() {
+							setInterval('autoScroll(".demo")', 3000);
+						})
+					}
+				</script>
+			</div>
+			<div class="shopMainbg">
+				<div class="shopMain" id="shopmain">
+
+					<!--今日推荐 -->
+
+					<div class="am-g am-g-fixed recommendation">
+						<div class="clock am-u-sm-3">
+							<img src="static/images/2023.png"></img>
+							<p>今日<br>推荐</p>
+						</div>
+						<a v-for="rp in recommendproducts" :href="'introduction.html?pid='+rp.productId">
+							<div class="am-u-sm-4 am-u-lg-3 ">
+								<div class="info">
+									<h3>{{rp.productName}}</h3>
+									<h4>销量：{{rp.soldNum}}</h4>
+								</div>
+								<div class="recommendationMain one">
+									<img v-if="rp.imgs.length>0" :src="'static/images/'+rp.imgs[0].url"></img>
+								</div>
+							</div>
+						</a>
+					</div>
+					<div class="clear "></div>
+
+                <div v-for="rc,index in recommendcategories" :id="'f'+(index+1)">
+				<div v-if="rc.products.length">
+					<!--分类商品推荐-->
+					<div class="am-container ">
+						<div class="shopTitle ">
+							<h4>{{rc.categoryName}}</h4>
+							<h3>{{rc.categorySlogan}}</h3>
+							<span class="more ">
+                    <a href="search.html">更多商品</a>
+                        </span>
+						</div>
+					</div>
+					
+					<div class="am-g am-g-fixed floodFour">
+						<div class="am-u-sm-5 am-u-md-4 text-one list ">
+							<div class="word">
+								<template  v-for="c2 in rc.categories">
+									<template v-for="c3 in c2.categories">
+										<a class="outer" :href="'search.html?cid='+c3.categoryId+'&cname='+c3.categoryName"><span class="inner"><b class="text">{{c3.categoryName}}</b></span></a>
+									</template>
+								</template>
+							</div>
+							<a>
+								<div class="outer-con ">
+									<div class="title ">
+										&nbsp;&nbsp;&nbsp;开抢啦！
+									</div>
+									<div class="sub-title ">
+										商品大礼包
+									</div>
+								</div>
+                                  <img :src="'static/images/'+rc.categoryPic" />
+							</a>
+							<div class="triangle-topright"></div>	
+						</div>
+						
+						<div class="am-u-sm-7 am-u-md-4 text-two sug" v-if="rc.products.length>0">
+								<div class="outer-con ">
+									<div class="title ">
+										{{rc.products[0].productName}}
+									</div>
+									<div class="sub-title ">
+										销量：{{rc.products[0].soldNum}}
+									</div>
+								</div>
+								<a :href="'introduction.html?pid='+rc.products[0].productId"><img :src="'static/images/'+rc.products[0].imgs[0].url" /></a>
+						</div>
+
+						<div class="am-u-sm-7 am-u-md-4 text-two" v-if="rc.products.length>1">
+								<div class="outer-con ">
+									<div class="title ">
+										{{rc.products[1].productName}}
+									</div>
+									<div class="sub-title ">
+										销量：{{rc.products[1].soldNum}}
+									</div>
+								</div>
+								<a :href="'introduction.html?pid='+rc.products[1].productId"><img :src="'static/images/'+rc.products[1].imgs[0].url" /></a>
+						</div>
+
+
+						<div class="am-u-sm-3 am-u-md-2 text-three big" v-if="rc.products.length>2">
+							<div class="outer-con ">
+								<div class="title ">
+									{{rc.products[2].productName}}
+								</div>
+								<div class="sub-title ">
+									销量：{{rc.products[2].soldNum}}
+								</div>
+							</div>
+							<a :href="'introduction.html?pid='+rc.products[2].productId"><img :src="'static/images/'+rc.products[2].imgs[0].url" /></a>
+						</div>
+
+						<div class="am-u-sm-3 am-u-md-2 text-three sug" v-if="rc.products.length>3">
+							<div class="outer-con ">
+								<div class="title ">
+									{{rc.products[3].productName}}
+								</div>
+								<div class="sub-title ">
+									销量：{{rc.products[3].soldNum}}
+								</div>
+							</div>
+							<a :href="'introduction.html?pid='+rc.products[3].productId"><img :src="'static/images/'+rc.products[3].imgs[0].url" /></a>
+						</div>
+
+						<div class="am-u-sm-3 am-u-md-2 text-three " v-if="rc.products.length>4">
+							<div class="outer-con ">
+								<div class="title ">
+									{{rc.products[4].productName}}
+								</div>
+								<div class="sub-title ">
+									销量：{{rc.products[4].soldNum}}
+								</div>
+							</div>
+							<a :href="'introduction.html?pid='+rc.products[4].productId"><img :src="'static/images/'+rc.products[4].imgs[0].url" /></a>
+						</div>
+
+						<div class="am-u-sm-3 am-u-md-2 text-three last big " v-if="rc.products.length>5">
+							<div class="outer-con ">
+								<div class="title ">
+									{{rc.products[5].productName}}
+								</div>
+								<div class="sub-title ">
+									销量：{{rc.products[5].soldNum}}
+								</div>
+								
+							</div>
+							<a :href="'introduction.html?pid='+rc.products[5].productId"><img :src="'static/images/'+rc.products[5].imgs[0].url" /></a>
+						</div>
+
+					</div>
+                 	<div class="clear "></div>  
+				</div>
+				</div>
+                
+					<div class="footer ">
+						<div class="footer-hd ">
+							<p>
+								<a href="# ">订单</a>
+								<b>|</b>
+								<a href="# ">物流</a>
+								<b>|</b>
+								<a href="http://www.hatu.edu.cn/index.html">关于湖应</a>
+							</p>
+						</div>
+						<div class="footer-bd ">
+							<p>
+								<a>版权所有，侵权必究</a>
+								<b>|</b>
+								<a>联系电话：15307426805</a>
+							</p>
+						</div>
+					</div>
+
+		</div>
+		</div>
+		</div>
+		<script>
+			window.jQuery || document.write('<script src="static/js/jquery.min.js "><\/script>');
+		</script>
+		<script type="text/javascript " src="static/js/quick_links.js "></script>
+		<script type="text/javascript" src="static/js/vue.js"></script>
+		<script type="text/javascript" src="static/js/axios.min.js"></script>
+		<script type="text/javascript" src="static/js/cookie_utils.js"></script>
+		<script type="text/javascript" src="static/js/baseUrl.js"></script>
+		<script type="text/javascript">
+			var vue = new Vue({
+			  el: "#c1",
+			  data:{
+					username:"",
+					nickname:"",
+					userImg:"",
+					isLogin:false,
+					images:[],
+					categories:[],
+					recommendproducts:[],
+					recommendcategories:[],
+					keyword:""
+				},
+				created:function(){
+					var token = getCookieValue("token");
+					if(token != "" && token != null){
+						this.username = getCookieValue("username");
+						this.nickname = getCookieValue("nickname");
+						this.userImg = getCookieValue("userImg");
+						this.isLogin = true;
+					}
+
+					// 轮播图
+					var url = baseUrl + "index/img";
+					axios.get(url).then((res)=>{
+						this.images = res.data.data;
+						//渲染轮播图getUrlParam("sid")
+						//初始化轮播图动画效果
+						setTimeout(function(){
+							$('.am-slider').flexslider();
+						},100);
+					});
+
+					//分类列表
+					var url2 = baseUrl + "index/clist";
+					axios.get(url2).then((res)=>{
+						this.categories = res.data.data;
+						setTimeout(function(){
+							$("li").hover(function() {
+									$(".category-content .category-list li.first .menu-in").css("display", "none");
+									$(".category-content .category-list li.first").removeClass("hover");
+									$(this).addClass("hover");
+									$(this).children("div.menu-in").css("display", "block")
+								}, function() {
+									$(this).removeClass("hover")
+									$(this).children("div.menu-in").css("display", "none")
+								},100);
+						});
+					});
+
+					//今日推荐
+					var url3 = baseUrl + "index/plist";
+					axios.get(url3).then((res)=>{
+						this.recommendproducts = res.data.data;
+					});
+
+					//分类推荐
+					var url4 = baseUrl + "index/flist";
+					axios.get(url4).then((res)=>{
+						console.log(res);
+						this.recommendcategories = res.data.data;
+						console.log(this.recommendcategories[0].products[0].imgs[0].url);
+					});
+				},
+				methods:{
+					toSearch:function(){
+						var url = "search.html?keyword=" + this.keyword;
+						window.location.href = encodeURI(url);
+					}
+				}
+			})
+		</script>
+	</body>
+
+</html>

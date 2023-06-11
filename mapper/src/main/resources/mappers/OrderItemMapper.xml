@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kzh.dao.OrderItemMapper">
+
+  <resultMap id="BaseResultMap" type="com.kzh.entity.OrderItem">
+    <id column="item_id" jdbcType="VARCHAR" property="itemId" />
+    <result column="order_id" jdbcType="VARCHAR" property="orderId" />
+    <result column="product_id" jdbcType="VARCHAR" property="productId" />
+    <result column="product_name" jdbcType="VARCHAR" property="productName" />
+    <result column="product_img" jdbcType="VARCHAR" property="productImg" />
+    <result column="sku_id" jdbcType="VARCHAR" property="skuId" />
+    <result column="sku_name" jdbcType="VARCHAR" property="skuName" />
+    <result column="product_price" jdbcType="DECIMAL" property="productPrice" />
+    <result column="buy_counts" jdbcType="INTEGER" property="buyCounts" />
+    <result column="total_amount" jdbcType="DECIMAL" property="totalAmount" />
+    <result column="basket_date" jdbcType="TIMESTAMP" property="basketDate" />
+    <result column="buy_time" jdbcType="TIMESTAMP" property="buyTime" />
+    <result column="is_comment" jdbcType="INTEGER" property="isComment" />
+  </resultMap>
+
+  <select id="listOrderItemsByOrderId" resultMap="BaseResultMap">
+    select
+      item_id,
+      order_id,
+      product_id,
+      product_name,
+      product_img,
+      sku_id,
+      sku_name,
+      product_price,
+      buy_counts,
+      total_amount,
+      basket_date,
+      buy_time,
+      is_comment
+    from order_item where order_id=#{orderId}
+  </select>
+</mapper>

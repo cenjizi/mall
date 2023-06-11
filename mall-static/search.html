@@ -1,0 +1,334 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+		<title>搜索页面</title>
+		<link href="static/css/amazeui.css" rel="stylesheet" type="text/css" />
+		<link href="static/css/admin.css" rel="stylesheet" type="text/css" />
+		<link href="static/css/demo.css" rel="stylesheet" type="text/css" />
+		<link href="static/css/seastyle.css" rel="stylesheet" type="text/css" />
+		<script type="text/javascript" src="static/js/jquery-1.7.min.js"></script>
+		<script type="text/javascript" src="static/js/script.js"></script>
+		<!-- 引入样式 -->
+		<link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+		
+	</head>
+
+	<body>
+		<div id="container">
+			<!--顶部导航条 -->
+			<div class="am-container header">
+				<ul class="message-l">
+					<div class="topMessage" >
+						<div class="menu-hd" v-if="isLogin">
+							{{nickname}},欢迎您
+						</div>
+						<div class="menu-hd" v-else>
+							<a href="login.html" target="_top" class="h">亲，请登录 </a>
+							<a href="register.html" target="_top"> 免费注册</a>
+						</div>
+					</div>
+				</ul>
+				<ul class="message-r">
+					<div class="topMessage home">
+						<div class="menu-hd"><a href="index.html" target="_top" class="h">商城首页</a></div>
+					</div>
+					<div class="topMessage my-shangcheng">
+						<div class="menu-hd MyShangcheng"><a href="user-center.html" target="_top">个人中心</a></div>
+					</div>
+					<div class="topMessage mini-cart">
+						<div class="menu-hd"><a id="mc-menu-hd" href="shopcart.html" target="_top">购物车</a></div>
+					</div>
+				</ul>
+				</div>
+			<!--悬浮搜索框-->
+			<div class="nav white">
+				<div class="logoBig">
+					<a href="index.html"><img src="static/images/logo.jpg" style="margin-left: 0px"></a>
+				</div>
+	
+					<div class="search-bar pr">
+						<a href="#"></a>
+						<form>
+							<input id="searchInput" v-model="keyword" type="text" placeholder="搜索" autocomplete="off">
+							<input id="ai-topsearch" class="submit am-btn" value="搜索" index="1" type="button" @click="toSearch">
+						</form>
+					</div>
+				</div>
+	
+			<div class="clear"></div>
+			<!-- <b class="line"></b> -->
+	        <div class="search">
+				   <!-- <div class="search-list">
+						<div class="nav-table">
+							   <div class="long-title"><span class="all-goods">全部分类</span></div>
+							   <div class="nav-cont">
+									<ul>
+										<li class="index"><a href="index.html">首页</a></li>
+		                                <li class="qc"><a href="#">闪购</a></li>
+		                                <li class="qc"><a href="#">限时抢</a></li>
+		                                <li class="qc"><a href="#">团购</a></li>
+		                                <li class="qc last"><a href="#">大包装</a></li>
+									</ul>
+								    <div class="nav-extra">
+								    	<i class="am-icon-user-secret am-icon-md nav-user"></i><b></b>我的福利
+								    	<i class="am-icon-angle-right" style="padding-left: 10px;"></i>
+								    </div>
+								</div>
+					</div> -->
+						<div class="am-g am-g-fixed">
+								<div class="am-u-sm-12 am-u-md-12">
+			                  	<div class="theme-popover">														
+									<ul class="select">
+										<p class="title font-normal">
+											<span class="fl">
+												<template v-if="keyword">{{this.keyword}}</template>
+												<template v-else>{{this.cname}}</template>
+											</span>
+											<span class="total fl">搜索到<strong class="num">{{this.count}}</strong>件相关商品</span>
+										</p>
+										<div class="clear"></div>
+										<li class="select-result">
+											<dl>
+												<dt>已选</dt>
+												<dd class="select-no"></dd>
+												<p class="eliminateCriteria">清除</p>
+											</dl>
+										</li>
+										<div class="clear"></div>
+										<!-- <li class="select-list">
+											<dl id="select1">
+												<dt class="am-badge am-round">出版社</dt>	
+											
+												 <div class="dd-conent">										
+													<dd class="select-all selected"><a href="#">全部</a></dd>
+													<template v-for="brand in brands">
+														<dd><a href="#">{{brand}}</a></dd>
+													</template>
+												 </div>
+								
+											</dl>
+										</li> -->
+									</ul>
+									<div class="clear"></div>
+		                        </div>
+									<div class="search-content">
+										<div class="sort">
+											<li class="first"><a title="综合">综合排序</a></li>
+											<!-- <li><a title="销量">销量排序</a></li>
+											<li><a title="价格">价格优先</a></li>
+											<li class="big"><a title="评价" href="#">评价为主</a></li> -->
+										</div>
+										<div class="clear"></div>
+		
+										<ul class="am-avg-sm-2 am-avg-md-3 am-avg-lg-4 boxes">
+											<template v-for="p in products">
+												<li>
+													<div class="i-pic limit" @click="toIntroduction(p.productId)" :data-id="p.productId">
+														<img :src="'static/images/'+p.skus[0].skuImg" />
+														<p class="title fl">{{p.productName}} {{p.skus[0].skuName}}</p>
+														<p class="price fl">
+															<b>¥</b>
+															<strong>{{p.skus[0].sellPrice}}</strong>
+														</p>
+														<p class="number fl">
+															销量<span>{{p.soldNum}}</span>
+														</p>
+													</div>
+												</li>
+											</template>
+										</ul>
+									</div>
+									<div class="search-side">
+									</div>
+									<div class="clear"></div>
+									<!--分页 -->
+									<el-pagination 
+										background layout="prev, pager, next" 
+										:current-page="pageNum"
+										:page-size="limit" 
+										:total="count"
+										@current-change="pager">
+									</el-pagination>
+								</div>
+							</div>
+						<div class="footer">
+							<div class="footer-hd ">
+								<p>
+									<a href="# ">订单</a>
+									<b>|</b>
+									<a href="# ">物流</a>
+									<b>|</b>
+									<a href="http://www.hatu.edu.cn/index.html">关于湖应</a>
+								</p>
+							</div>
+							<div class="footer-bd ">
+								<p>
+									<a>版权所有，侵权必究</a>
+									<b>|</b>
+									<a>联系电话：15307426805</a>
+								</p>
+							</div>
+							</div>
+					</div>
+				</div>	
+			<div class="theme-popover-mask"></div>
+		</div>
+		<script type="text/javascript" src="static/js/quick_links.js"></script>
+		
+		<script type="text/javascript" src="static/js/vue.js" ></script>
+		<!-- 引入组件库 -->
+		<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+		<script type="text/javascript" src="static/js/axios.min.js" ></script>
+		<script type="text/javascript" src="static/js/cookie_utils.js"></script>
+		<script type="text/javascript" src="static/js/utils.js" ></script>
+		<script type="text/javascript" src="static/js/baseUrl.js" ></script>
+		<script type="text/javascript">
+			var vm = new Vue({
+				el:"#container",
+				data:{
+					categoryId:"",
+					cname:"",
+					nickname:"",
+					isLogin:false,
+					pageNum:1,
+					limit:6,
+					products:[],
+					count:0,
+					brands:[],
+					keyword:null
+				},
+				created:function(){
+					var token = getCookieValue("token");
+					if(token != "" && token != null){
+						this.nickname = getCookieValue("nickname");
+						this.isLogin = true;
+					}
+					//1.获取从上个页面传递过来的参数
+					var cid = getUrlParam("cid");
+					this.cname = getUrlParam("cname");
+					this.keyword = getUrlParam("keyword");
+					
+					if(cid != null){
+						this.categoryId = cid;
+						//2.请求接口：查询此类别下的商品信息
+						var url1= baseUrl+"product/listbycid/"+this.categoryId;
+						axios({
+							url:url1,
+							method:"get",
+							params:{
+								pageNum:this.pageNum,
+								limit:this.limit
+							}
+						}).then((res)=>{
+							//3.显示数据
+							if(res.data.code == 10000){
+								this.products = res.data.data.list;
+								this.count = res.data.data.count;
+							}
+						});
+						//3.请求接口： 根据类别查询此类别下商品的品牌
+						var url2 = baseUrl+"product/listbrands/"+this.categoryId;
+						axios({
+							url:url2,
+							method:"get"
+						}).then((res)=>{
+							if(res.data.code == 10000){
+								this.brands = res.data.data;
+								console.log(this.brands+"出版社名");
+							}
+						});
+					}else if(this.keyword != null){
+						//根据关键字查询商品信息
+						var url3 = baseUrl+"product/listbykeyword";
+						axios({
+							url:url3,
+							method:"get",
+							params:{
+								keyword:this.keyword,
+								pageNum:this.pageNum,
+								limit:this.limit
+							}
+						}).then((res)=>{
+							if(res.data.code == 10000){
+								this.products = res.data.data.list;
+								this.count = res.data.data.count;
+							}
+						});
+						//根据关键字查询品牌列表
+						var url4 = baseUrl+"product/listbrands-keyword";
+						axios({
+							url:url4,
+							method:"get",
+							params:{
+								keyword:this.keyword
+							}
+						}).then((res)=>{
+							if(res.data.code == 10000){
+								this.brands = res.data.data;
+							}
+						});
+					}else{
+						console.log("nono");
+					}
+				},
+				methods:{
+					pager:function(page){
+						this.pageNum = page;
+						//按类别id进行分页查询
+						if(this.categoryId !=null && this.categoryId != ""){
+							var url1= baseUrl+"product/listbycid/"+this.categoryId;
+							axios({
+								url:url1,
+								method:"get",
+								params:{
+									pageNum:this.pageNum,
+									limit:this.limit
+								}
+							}).then((res)=>{
+								console.log("分页查询的数据"+res);
+								//3.显示数据
+								if(res.data.code == 10000){
+									this.products = res.data.data.list;
+									this.count = res.data.data.count;
+								}
+							});
+						}else if(this.keyword != null ){
+							//按关键字进行模糊查询
+							var url3 = baseUrl+"product/listbykeyword";
+							axios({
+								url:url3,
+								method:"get",
+								params:{
+									keyword:this.keyword,
+									pageNum:this.pageNum,
+									limit:this.limit
+								}
+							}).then((res)=>{
+								console.log("模糊："+res);
+								if(res.data.code == 10000){
+									this.products = res.data.data.list;
+									this.count = res.data.data.count;
+								}
+							});
+						}
+						
+					},
+					toIntroduction:function(pid){
+						window.location.href = "introduction.html?pid="+pid;
+					},
+					toSearch:function(){
+						var url = "search.html?keyword=" + this.keyword;
+						window.location.href = encodeURI(url);
+					}
+				}
+			});
+			
+			
+		</script>
+		
+	</body>
+
+</html>

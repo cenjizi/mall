@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>编辑地址</title>
+  <!-- 引入 Vue.js -->
+  <!-- <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script> -->
+  <script type="text/javascript" src="static/js/vue.js" ></script>
+  <!-- 引入 Element UI -->
+  <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+  <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+  <!-- 引入省市区数据 -->
+  <script src="https://unpkg.com/element-china-area-data@6.0.0/dist/element-china-area-data.iife.js"></script>
+  <!-- 引入 layui.css -->
+  <link rel="stylesheet" href="//unpkg.com/layui@2.6.8/dist/css/layui.css">
+  <!-- 引入 layui.js -->
+  <script src="//unpkg.com/layui@2.6.8/dist/layui.js"></script>
+  <script type="text/javascript" src="static/js/cookie_utils.js" ></script>
+
+  <script type="text/javascript" src="static/js/utils.js" ></script>
+  <script type="text/javascript" src="static/js/axios.min.js" ></script>
+  <script type="text/javascript" src="static/js/baseUrl.js" ></script>
+</head>
+
+<body>
+  <div id="app">
+
+    <div>
+      <!-- 添加地址表单 -->
+      <el-form ref="add_address" :model="add_address" label-width="120px">
+        <h5><a @click="back">返回</a></h5>
+        <el-form-item label="姓名" prop="name">
+          <el-input v-model="add_address.name"></el-input>
+        </el-form-item>
+        <el-form-item label="电话" prop="tel">
+          <el-input v-model="add_address.tel"></el-input>
+        </el-form-item>
+        <el-form-item label="省市区" prop="selectedOptions">
+          <el-cascader :options="options" v-model="add_address.selectedOptions" @change="addressChange"></el-cascader>
+        </el-form-item>
+        <el-form-item label="详细地址" prop="detailaddress">
+          <el-input v-model="add_address.detailaddress"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="onSubmit">保存</el-button>
+          <el-button @click="clear('add_address')">清空</el-button>
+        </el-form-item>
+      </el-form>
+
+      <!-- 下面是地址列表 -->
+      <h5>地址列表</h5>
+      <div v-for="(item, index) in address_list" :key="index" class="addresslist">
+        <el-descriptions :column="4" direction="vertical">
+        <!-- <el-descriptions :column="4" :size="size" direction="vertical"> -->
+          <el-descriptions-item label="姓名 ">{{ item.name }}</el-descriptions-item>
+          <el-descriptions-item label="电话 ">{{ item.tel }}</el-descriptions-item>
+          <!-- <el-descriptions-item :span="2">
+            {{ item.default1 }}
+          </el-descriptions-item> -->
+          <el-descriptions-item label="收货地址 ">
+            {{ item.addressText }}{{ item.detailaddress }}
+          </el-descriptions-item>
+          <el-descriptions-item label="操作 ">
+            <el-button type="primary" @click="edit_address(index)">编辑</el-button>
+            <el-button @click="del(index)">删除</el-button>
+            <el-button>
+              <em class="Default" v-if="item.isDefault">默认地址</em>
+              <em v-else @click="setDefault(index)">设为默认</em>
+            </el-button>
+          </el-descriptions-item>
+        </el-descriptions>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    //弹窗
+    var layer;
+    layui.use('layer', function(){
+      layer = layui.layer;
+    });
+    new Vue({
+      el: '#app',
+      data:{
+          address_list: [],
+          token:"",
+          userId:"",
+          add_address: {
+            address_id:"",//地址id
+            name: '',
+            tel: '',
+            selectedOptions: [], // 或者这里给一个默认省市区
+            // selectedOptions: ['110000', '110100', '110101'], // 或者这里给一个默认省市区
+            addressText: '北京市市辖区东城区', // 省市区，另设addressText显示
+            detailaddress: '',
+            isDefault: "", // 此地址是否默认
+            addr_id: null // 作为点击保存时，是添加还是编辑的标识 null添加 非null编辑
+          },
+          options: window.elementChinaAreaData.regionData
+      },
+      created:function(){
+        console.log(elementChinaAreaData.regionData);
+        this.token = getCookieValue("token");
+        if(this.token != null && this.token != "") {
+          this.userId = getCookieValue("userId");
+          axios({
+							method:"get",
+							url:baseUrl + "useraddr/list",
+							headers:{
+								token:this.token
+							},
+							params:{
+								userId:this.userId
+							}
+						}).then((res)=>{
+              if(res.data.code == 20001 || res.data.code == 20002){
+                //跳转登录
+                var loginUrl = "login.html?tips=请先登录!&returnUrl=user-address.html";
+                window.location.href = encodeURI(loginUrl);
+              }else{
+                //请求成功  [{commonType:0},{commonType:1}]
+                var addrs= res.data.data;
+                for(var i=0;i<addrs.length;i++){
+                  var addr1 = {
+                    address_id:addrs[i].addrId,
+                    name: addrs[i].receiverName,
+                    tel: addrs[i].receiverMobile,
+                    selectedOptions: [addrs[i].province, addrs[i].city, addrs[i].area], // 或者这里给一个默认省市区
+                    addressText: addrs[i].province + 
+                                  addrs[i].city + 
+                                  addrs[i].area, // 省市区，另设addressText显示
+                    detailaddress: addrs[i].addr,
+                    isDefault: addrs[i].commonAddr, // 此地址是否默认
+                    addr_id: null // 作为点击保存时，是添加还是编辑的标识 null添加 非null编辑
+								  };
+                  // 从数据库拉取到data
+                  this.address_list.push(addr1);
+                }
+                localStorage.setItem("addresslist", JSON.stringify(this.address_list));
+              }
+            });
+        }else{
+            var loginUrl = "login.html?tips=请先登录!&returnUrl=user-address.html";
+            window.location.href = encodeURI(loginUrl);
+        }
+      },
+      methods: {
+        // 省市区函数
+        addressChange:function(arr) {
+          // 此句为el-cascader的值
+          var addressText = window.elementChinaAreaData.CodeToText[arr[0]] + window.elementChinaAreaData.CodeToText[arr[1]] + window.elementChinaAreaData.CodeToText[arr[2]];
+          this.add_address.addressText = addressText;
+        },
+        // 清空表单
+        clear:function(formname) {
+          this.$refs[formname].resetFields(); // 此时传值应是字符串 this.clear("add_address")
+        },
+        // 添加新地址
+        onSubmit:function() {
+          // 如果id值为空，就是添加，不为空就是编辑
+          if (this.add_address.addr_id == null) {
+            var copy_add = JSON.parse(JSON.stringify(this.add_address)); // 复制obj 表单
+            //遍历省市区编码，得到省市区
+            var province = "";
+            var city = "";
+            var area = "";
+            for(var i=0;i<this.options.length;i++){
+              if(copy_add.selectedOptions[0] == this.options[i].value){
+                province = this.options[i].label;
+                for(var j=0;j<this.options[i].children.length;j++){
+                  if(copy_add.selectedOptions[1] == this.options[i].children[j].value){
+                    city =  this.options[i].children[j].label;
+                    for(var k=0;j<this.options[i].children[j].children.length;k++){
+                      if(copy_add.selectedOptions[2] == this.options[i].children[j].children[k].value){
+                        area = this.options[i].children[j].children[k].label;
+                        break;
+                      }
+                    }break;
+                  }
+                }break;
+              }
+            }
+
+            //保存要添加的地址信息至数据库
+            var addr = {
+              userId:this.userId,
+              receiverName:copy_add.name,
+              receiverMobile:copy_add.tel,
+              province:province,
+              city:city,
+              area:area,
+              addr:copy_add.detailaddress,
+            }
+            axios({
+							method:"post",
+							url:baseUrl + "useraddr/add",
+							headers:{
+								token:this.token
+							},
+							data:addr
+						}).then((res)=>{
+              if(res.data.code == 20001 || res.data.code == 20002){
+                //跳转登录
+                var loginUrl = "login.html?tips=请先登录!&returnUrl=user-address.html";
+                window.location.href = encodeURI(loginUrl);
+              }else if(res.data.code == 10002){
+                layer.msg(res.data.msg);
+              }else if(res.data.code == 10001){
+                layer.msg(res.data.msg);
+              }else{
+                //请求成功
+                this.address_list.push(copy_add); // 添加进列表
+                layer.msg(res.data.msg);
+                // 添加完了初始化 /清空表单
+                this.clear("add_address");
+                // 保存进缓存
+                localStorage.setItem("addresslist", JSON.stringify(this.address_list));
+              }
+            });
+          } else {
+            // 点击上面的保存按钮
+            // 进入编辑地址,把值赋回列表
+            var copy_edit = JSON.parse(JSON.stringify(this.add_address));
+            copy_edit.addr_id = null;
+
+            //遍历省市区编码，得到省市区
+            var province = "";
+            var city = "";
+            var area = "";
+            for(var i=0;i<this.options.length;i++){
+              if(copy_edit.selectedOptions[0] == this.options[i].value){
+                province = this.options[i].label;
+                for(var j=0;j<this.options[i].children.length;j++){
+                  if(copy_edit.selectedOptions[1] == this.options[i].children[j].value){
+                    city =  this.options[i].children[j].label;
+                    for(var k=0;j<this.options[i].children[j].children.length;k++){
+                      if(copy_edit.selectedOptions[2] == this.options[i].children[j].children[k].value){
+                        area = this.options[i].children[j].children[k].label;
+                        break;
+                      }
+                    }break;
+                  }
+                }break;
+              }
+            }
+
+            //保存编辑好的地址信息至数据库
+            var addr = {
+              addrId:copy_edit.address_id,
+              userId:this.userId,
+              receiverName:copy_edit.name,
+              receiverMobile:copy_edit.tel,
+              province:province,
+              city:city,
+              area:area,
+              addr:copy_edit.detailaddress,
+              commonAddr:0,
+              status:1,
+            }
+            axios({
+							method:"put",
+							url:baseUrl + "useraddr/update",
+							headers:{
+								token:this.token
+							},
+							data:addr
+						}).then((res)=>{
+              if(res.data.code == 20001 || res.data.code == 20002){
+                //跳转登录
+                var loginUrl = "login.html?tips=请先登录!&returnUrl=user-address.html";
+                window.location.href = encodeURI(loginUrl);
+              }else if(res.data.code == 10001){
+                layer.msg(res.data.msg);
+              }else{
+                layer.msg("编辑成功");
+                this.address_list[this.add_address.addr_id] = JSON.parse(JSON.stringify(copy_edit));
+                // 初始化
+                this.clear("add_address");
+                // 保存进缓存
+                localStorage.setItem("addresslist", JSON.stringify(this.address_list));
+              }
+            });
+          }
+        },
+        // 设置默认地址
+        setDefault:function(index) {
+          for (var i = 0; i < this.address_list.length; i++) {
+            this.address_list[i].isDefault = i == index;
+          }
+          this.address_list.splice(0, 0, ...this.address_list.splice(index, 1)); // 默认地址设在首位  ...展开运算符
+          // 保存进缓存
+          localStorage.setItem("addresslist", JSON.stringify(this.address_list));
+        },
+        // 点击列表中每个地址的编辑时 
+        edit_address:function(index) {
+          // 让渲染的add_address=此时选中的地址(index)  
+          var copy_obj = JSON.parse(JSON.stringify(this.address_list[index])); // 复制列表里此地址obj
+          copy_obj.addr_id = index;
+          this.add_address = JSON.parse(JSON.stringify(copy_obj));
+        },
+        del:function(index) {
+          this.address_list.splice(index, 1);
+          // 保存进缓存
+          localStorage.setItem("addresslist", JSON.stringify(this.address_list));
+        },
+        back:function(){
+          var returnUrl = getUrlParam("returnUrl");
+          var cids = getUrlParam("cids");
+          if(returnUrl == null){
+            window.location.href = "index.html";
+          }else{
+            window.location.href = returnUrl + "?cids=" + cids;
+          }
+        },
+      }
+});
+</script>
+  <style>
+    .Default {
+      color: orange;
+    }
+  
+    .addresslist {
+      border-top: 1px solid darkgray;
+    }
+  
+    h5 {
+      text-align: left;
+      font-weight: bold;
+    }
+  </style>
+</body>
+</html>
+
+

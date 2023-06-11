@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kzh.dao.ProductSkuMapper">
+
+  <resultMap id="BaseResultMap" type="com.kzh.entity.ProductSku">
+    <id column="sku_id" jdbcType="VARCHAR" property="skuId" />
+    <result column="product_id" jdbcType="VARCHAR" property="productId" />
+    <result column="sku_name" jdbcType="VARCHAR" property="skuName" />
+    <result column="sku_img" jdbcType="VARCHAR" property="skuImg" />
+    <result column="untitled" jdbcType="VARCHAR" property="untitled" />
+    <result column="original_price" jdbcType="INTEGER" property="originalPrice" />
+    <result column="sell_price" jdbcType="INTEGER" property="sellPrice" />
+    <result column="discounts" jdbcType="DECIMAL" property="discounts" />
+    <result column="stock" jdbcType="INTEGER" property="stock" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+  </resultMap>
+
+  <select id="selectLowerestPriceByProductId" resultMap="BaseResultMap">
+    select  sku_id,product_id,sku_name, sku_img,untitled,original_price,sell_price,
+      discounts,stock,create_time,update_time,status
+    from product_sku
+    where product_id = #{productId}
+    ORDER BY  sell_price limit 0,1
+  </select>
+</mapper>

@@ -1,0 +1,506 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0 ,minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+		<title>结算页面</title>
+		<link rel="shortcut icon" href="img/foodie.ico">
+
+		<link href="static/css/amazeui.css" rel="stylesheet" type="text/css">
+		<link href="static/css/demo.css" rel="stylesheet" type="text/css">
+		<link href="static/css/cartstyle.css" rel="stylesheet" type="text/css">
+		<link href="static/css/jsstyle.css" rel="stylesheet" type="text/css">
+		<link href="static/css/lee.css" rel="stylesheet" type="text/css">
+
+	</head>
+
+	<body style="overflow: visible;">
+		<div id="container">
+			
+		<!--顶部导航条 -->
+		<div class="am-container header">
+			<ul class="message-l">
+				<div class="topMessage">
+					<div class="menu-hd">
+						{{nickname}},欢迎您
+					</div>
+				</div>
+			</ul>
+			<ul class="message-r">
+				<div class="topMessage home">
+					<div class="menu-hd"><a href="index.html" target="_top" class="h">商城首页</a></div>
+				</div>
+				<div class="topMessage my-shangcheng">
+					<div class="menu-hd MyShangcheng"><a href="user-center.html" target="_top">个人中心</a></div>
+				</div>
+				<div class="topMessage mini-cart">
+					<div class="menu-hd"><a id="mc-menu-hd" href="shopcart.html" target="_top"><span>购物车</span></a></div>
+				</div>
+			</ul>
+		</div>
+
+		<!--顶部-->
+		<div class="nav white">
+			<div class="logoBig">
+				<a href="index.html"><img src="static/images/logo.jpg" style="margin-left: 0px"></a>
+			</div>
+		</div>
+
+		<div class="clear"></div>
+			
+			<div class="concent" style="margin-top: 35px;">
+				<div class="paycont">
+					<div class="address">
+						<h3>确认收货地址 </h3>
+						<div class="control selected">
+							<div class="tc-btn createAddr theme-login am-btn am-btn-danger"><a @click="gotoUserAddr">使用新地址</a></div>
+						</div>
+						<div class="clear"></div>
+						<ul v-if="isaddr">
+							<span>
+								<template v-for="addr,index in addrs">
+									<li :class="{'user-addresslist':true, 'defaultAddr':index==addrIndex}" style="margin-top: 6px;" @click="chooseAddr" :data-index="index">
+										<div class="address-left">
+											<div class="user DefaultAddr">
+												<span class="buy-address-detail">
+													<span class="buy-user">{{addr.receiverName}}</span>
+													<span class="buy-phone">{{addr.receiverMobile}}</span>
+												</span>
+											</div>
+											<div class="default-address DefaultAddr">
+												<span class="buy-line-title buy-line-title-type">收货地址：</span> 
+												<span class="buy--address-detail">
+													<span class="province">{{addr.province}}</span> 
+													<span class="city">{{addr.city}}</span> 
+													<span class="dist">{{addr.area}}</span> 
+													<span class="street">{{addr.addr}}</span>
+												</span>
+											</div> 
+											<ins class="deftip" v-if="addr.commonAddr==1">默认地址</ins>
+										</div>
+										<div class="address-right">
+											<a href="person/address.html"><span class="am-icon-angle-right am-icon-lg"></span></a>
+										</div>
+										<div class="clear"></div>
+										<div class="new-addr-btn">
+											<a href="javascript:void(0);" class="hidden">设为默认</a> <span class="new-addr-bar hidden">|</span>
+											<a @click="gotoUserAddr">编辑</a> <span class="new-addr-bar">|</span>
+											<a href="javascript:void(0);">删除</a>
+										</div>
+									</li>
+								</template>
+								
+							</span>
+						</ul>
+				<div class="clear"></div>
+			</div>
+			<div class="logistics">
+				<h3>选择支付方式</h3>
+				<ul class="pay-list">
+					<li style="width: 73px; height: 40px; padding: 3px;" :class="{'selected':payType==1}" @click="changePayType(1)">
+						<img src="static/images/weizhifu.jpg" style="width: 70px; height: 34px;" >
+						<span></span>
+					</li>
+					<!-- <li style="width: 73px; height: 40px; padding: 3px;" :class="{'selected':payType==2}" @click="changePayType(2)">
+						<img src="static/images/zhifubao.jpg" style="width: 70px; height: 34px;">
+						<span></span>
+					</li> -->
+				</ul>
+			</div>
+			<div class="clear"></div>
+			<div class="concent">
+				<div id="payTable">
+					<h3>确认订单信息</h3>
+					<div class="cart-table-th">
+						<div class="wp">
+							<div class="th th-item">
+								<div class="td-inner">商品信息</div>
+							</div>
+							<div class="th th-price">
+								<div class="td-inner">单价</div>
+							</div>
+							<div class="th th-amount">
+								<div class="td-inner">数量</div>
+							</div>
+							<div class="th th-sum">
+								<div class="td-inner">金额</div>
+							</div>
+							<div class="th th-oplist">
+								<div class="td-inner">配送方式</div>
+							</div>
+						</div>
+					</div>
+					<div class="clear"></div>
+					<div class="bundle  bundle-last">
+						<template v-for="sc in shopCarts">
+							<div class="bundle-main">
+								<ul class="item-content clearfix">
+									<div class="pay-phone">
+										<li class="td td-item">
+											<div class="item-pic">
+												<a target="_blank" class="J_MakePoint"><img :src="'static/images/'+sc.productImg" class="itempic J_ItemImg" style="width: 80px; height: 80px;"></a>
+												<!-- <a href="item.html?itemId=cake-1004" target="_blank" class="J_MakePoint"><img :src="'static/pimgs/'+sc.productImg" class="itempic J_ItemImg" style="width: 80px; height: 80px;"></a> -->
+											</div>
+											<div class="item-info">
+												<div class="item-basic-info">
+													<a target="_blank" data-point="tbcart.8.11" class="item-title J_MakePoint">{{sc.productName}} {{sc.skuName}}</a>
+													<!-- <a href="item.html?itemId=cake-1004" target="_blank" data-point="tbcart.8.11" class="item-title J_MakePoint">{{sc.productName}} {{sc.skuName}}</a> -->
+												</div>
+											</div>
+										</li>
+										<li class="td td-info">
+											<div class="item-props"><span class="sku-line">{{sc.skuProps}}</span></div>
+										</li>
+										<li class="td td-price">
+											<div class="item-price price-promo-promo">
+												<div class="price-content"><em class="J_Price price-now">{{sc.sellPrice}}</em></div>
+											</div>
+										</li>
+									</div>
+									<li class="td td-amount">
+										<div class="amount-wrapper ">
+											<div class="item-amount "><span class="phone-title">购买数量</span>
+												<div class="sl">{{sc.cartNum}}</div>
+											</div>
+										</div>
+									</li>
+									<li class="td td-sum">
+										<div class="td-inner"><em tabindex="0" class="J_ItemSum number">{{sc.sellPrice*sc.cartNum}}</em></div>
+									</li>
+									<li class="td td-oplist">
+										<div class="td-inner"><span class="phone-title">配送方式</span>
+											<div class="pay-logis">
+												包邮
+											</div>
+										</div>
+									</li>
+								</ul>
+								<div class="clear"></div>
+							</div>
+						</template>
+						
+					</div>
+					<div class="clear"></div>
+				</div>
+			</div>
+			<div class="clear"></div>
+			<div class="pay-total">
+				<div class="order-extra">
+					<div class="order-user-info">
+						<div id="holyshit257" class="memo"><label>买家留言：</label> 
+							<input type="text" title="选填, 可写备注" placeholder="选填, 可写备注" v-model="orderRemark" class="memo-input J_MakePoint c2c-text-default memo-close">
+							<div class="msg hidden J-msg">
+								<p class="error">最多输入500个字符</p>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="clear"></div>
+			</div>
+			<div class="buy-point-discharge ">
+				<p class="price g_price ">
+					合计（包邮）
+					<em class="pay-sum">¥{{totalPrice}}</em></p>
+			</div>
+			<div class="order-go clearfix">
+				<div class="pay-confirm clearfix">
+					<template v-if="isaddr">
+					<div class="box">
+						<div tabindex="0" id="holyshit267" class="realPay"><em class="t">实付款：</em> 
+							<span class="price g_price ">
+								<em id="J_ActualFee" class="style-large-bold-red ">¥{{totalPrice}}</em>
+							</span></div>
+						<div id="holyshit268" class="pay-address">
+							<p class="buy-footer-address"><span class="buy-line-title buy-line-title-type">寄送至：</span> 
+								<span class="buy--address-detail">
+									<span class="province">{{addrs[addrIndex].province}}</span> 
+									<span class="city">{{addrs[addrIndex].city}}</span> 
+									<span class="dist">{{addrs[addrIndex].area}}</span> 
+									<span class="street">{{addrs[addrIndex].addr}}</span>
+								</span>
+							</p>
+							<p class="buy-footer-address">
+								<span class="buy-line-title">收货人：</span>
+								<span class="buy-address-detail">
+									<span class="buy-user">{{addrs[addrIndex].receiverName}}</span>
+									<span class="buy-phone">{{addrs[addrIndex].receiverMobile}}</span>
+								</span>
+							</p>
+						</div>
+					</div>
+					<div id="holyshit269" class="submitOrder">
+						<div class="go-btn-wrap">
+							<a id="J_Go" href="#" tabindex="0" title="点击此按钮，提交订单" class="btn-go" @click="doSubmit">提交订单</a>
+						</div>
+					</div>
+				</template>
+					<div class="clear"></div>
+				</div>
+			</div>
+		</div>
+		<div class="clear"></div>
+		</div>
+		
+		<div class="footer">
+			<div class="footer-hd ">
+				<p>
+					<a href="# ">订单</a>
+					<b>|</b>
+					<a href="# ">物流</a>
+					<b>|</b>
+					<a href="http://www.hatu.edu.cn/index.html">关于湖应</a>
+				</p>
+			</div>
+			<div class="footer-bd ">
+				<p>
+					<a>版权所有，侵权必究</a>
+					<b>|</b>
+					<a>联系电话：15307426805</a>
+				</p>
+			</div>
+				</div>
+		
+		<!-- <div class="theme-popover-mask" style="display: none; height: 763px;"></div>
+		<div class="theme-popover" style="overflow: hidden; display: none;">
+			<div class="am-cf am-padding">
+				<div class="am-fl am-cf"><strong class="am-text-danger am-text-lg">新增地址</strong> / <small>Add
+						address</small></div>
+			</div>
+			<hr>
+			<div class="am-u-md-12">
+				<form class="am-form am-form-horizontal">
+					<div class="am-form-group"><label for="user-name" class="am-form-label">收货人</label>
+						<div class="am-form-content"><input type="text" id="user-name" placeholder="收货人" maxlength="12"></div>
+					</div>
+					<div class="am-form-group"><label for="user-phone" class="am-form-label">手机号码</label>
+						<div class="am-form-content"><input id="user-phone" placeholder="手机号必填" maxlength="11"></div>
+					</div>
+					<div class="am-form-group"><label for="user-phone" class="am-form-label">所在地</label>
+						<div id="example" class="am-form-content address">
+							<select>
+								<option value="选择省份">选择省份</option>
+								<option value="北京">北京</option>
+								<option value="广东">广东</option>
+								<option value="上海">上海</option>
+								<option value="天津">天津</option>
+								<option value="重庆">重庆</option>
+								<option value="辽宁">辽宁</option>
+								<option value="江苏">江苏</option>
+								<option value="湖北">湖北</option>
+								<option value="四川">四川</option>
+								<option value="陕西">陕西</option>
+								<option value="河北">河北</option>
+								<option value="山西">山西</option>
+								<option value="河南">河南</option>
+								<option value="吉林">吉林</option>
+								<option value="黑龙江">黑龙江</option>
+								<option value="内蒙古">内蒙古</option>
+								<option value="山东">山东</option>
+								<option value="安徽">安徽</option>
+								<option value="浙江">浙江</option>
+								<option value="福建">福建</option>
+								<option value="湖南">湖南</option>
+								<option value="广西">广西</option>
+								<option value="江西">江西</option>
+								<option value="贵州">贵州</option>
+								<option value="云南">云南</option>
+								<option value="西藏">西藏</option>
+								<option value="海南">海南</option>
+								<option value="甘肃">甘肃</option>
+								<option value="宁夏">宁夏</option>
+								<option value="青海">青海</option>
+								<option value="新疆">新疆</option>
+								<option value="香港">香港</option>
+								<option value="澳门">澳门</option>
+								<option value="台湾">台湾</option>
+								<option value="海外">海外</option>
+								<option value="其他">其他</option>
+							</select>
+							<select>
+								<option value="请选择">请选择</option>
+								<option value="北京">北京</option>
+							</select>
+							<select>
+								<option value="请选择">请选择</option>
+								<option value="东城区">东城区</option>
+								<option value="西城区">西城区</option>
+								<option value="崇文区">崇文区</option>
+								<option value="宣武区">宣武区</option>
+								<option value="朝阳区">朝阳区</option>
+								<option value="海淀区">海淀区</option>
+								<option value="丰台区">丰台区</option>
+								<option value="石景山区">石景山区</option>
+								<option value="房山区">房山区</option>
+								<option value="通州区">通州区</option>
+								<option value="顺义区">顺义区</option>
+								<option value="昌平区">昌平区</option>
+								<option value="大兴区">大兴区</option>
+								<option value="怀柔区">怀柔区</option>
+								<option value="平谷区">平谷区</option>
+								<option value="门头沟区">门头沟区</option>
+								<option value="密云县">密云县</option>
+								<option value="延庆县">延庆县</option>
+								<option value="其他">其他</option>
+							</select>
+						</div>
+					</div>
+					<div class="am-form-group"><label for="user-intro" class="am-form-label">详细地址</label>
+						<div class="am-form-content"><textarea rows="3" id="user-intro" placeholder="输入详细地址"></textarea> <small>100字以内写出你的详细地址...</small></div>
+					</div>
+					<div class="am-form-group theme-poptit">
+						<div class="am-u-sm-9 am-u-sm-push-3">
+							<div class="am-btn am-btn-danger">保存</div>
+							<div class="am-btn am-btn-danger close">取消</div>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+		<div class="clear"></div> -->
+		</div>
+		<script type="text/javascript" src="static/js/utils.js" ></script>
+		<script type="text/javascript" src="static/js/cookie_utils.js" ></script>
+		<script type="text/javascript" src="static/js/vue.js" ></script>
+		<script type="text/javascript" src="static/js/axios.min.js" ></script>
+		<script type="text/javascript" src="static/js/baseUrl.js" ></script>
+		<script type="text/javascript">
+			var vm = new Vue({
+				el:"#container",
+				data:{
+					cartIds:"",
+					addrs:[],
+					isaddr:false,  //用户是否有地址
+					shopCarts:[],
+					addrIndex:0,  //用户选择的地址的索引（默认值和当前用户地址的默认地址索引相同）
+					totalPrice:0,
+					nickname:"",
+					payType:1,  //1 微信支付   2 支付宝
+					orderRemark:""  //用户备注
+				},
+				created:function(){
+					this.cartIds = getUrlParam("cids");
+					this.nickname = getCookieValue("nickname");
+					//1.根据当前用户id查询收货地址信息
+					var userId = getCookieValue("userId");
+					var token = getCookieValue("token");
+					
+					var url1 = baseUrl+"useraddr/list";
+					axios({
+						url:url1,
+						method:"get",
+						params:{
+							userId:userId
+						},
+						headers:{
+							token:token
+						}
+					}).then((res)=>{
+						if(res.data.code == 20001 || res.data.code == 20002){
+							//跳转登录
+							var loginUrl = "login.html?tips=请先登录!&returnUrl=order-add.html";
+							window.location.href = encodeURI(loginUrl);
+						}else{
+							//请求成功  [{commonType:0},{commonType:1}]
+							this.addrs = res.data.data;
+							if(this.addrs.length == 0){
+								this.isaddr = false;
+							}else{
+								this.isaddr = true;
+								//this.addrIndex的值 等于 当前用户的默认收货地址的索引
+								for(var i=0; i<this.addrs.length; i++){
+									if(this.addrs[i].commonAddr == 1){
+										this.addrIndex = i;
+									}
+								}
+							}
+						}
+					});
+					
+					//2.根据this.cartIds查询当前订单中的商品信息
+					var url2 = baseUrl+"shopcart/listbycids";
+					axios({
+						url:url2,
+						method:"get",
+						params:{
+							cids:this.cartIds
+						},
+						headers:{
+							token:token
+						}
+					}).then((res)=>{
+						if(res.data.code == 20001 || res.data.code == 20002){
+							//跳转登录
+							var loginUrl = "login.html?tips=请先登录!&returnUrl=order-add.html&cids=" + this.cartIds;
+                			window.location.href = encodeURI(loginUrl);
+						}else if(res.data.code == 10000){
+							//请求成功
+							this.shopCarts = res.data.data;
+							for(var i=0; i<this.shopCarts.length; i++){
+								this.totalPrice = this.totalPrice + this.shopCarts[i].cartNum*this.shopCarts[i].sellPrice;
+							}
+						}
+					});
+				},
+				methods:{
+					chooseAddr:function(event){
+						this.addrIndex = event.srcElement.dataset.index;
+					},
+					changePayType:function(m){
+						this.payType = m;
+					},
+					doSubmit:function(){
+						//将订单信息提交到：添加订单接口
+						//1.准备订单数据
+						var address = this.addrs[this.addrIndex].province + " " +this.addrs[this.addrIndex].city+" " 
+						              +this.addrs[this.addrIndex].area+" " +this.addrs[this.addrIndex].addr;
+						var order = {
+							"actualAmount": this.totalPrice,
+							"orderRemark": this.orderRemark,
+							"payType": this.payType,
+							"receiverAddress":  address,
+							"receiverMobile": this.addrs[this.addrIndex].receiverMobile,
+							"receiverName": this.addrs[this.addrIndex].receiverName,
+							"totalAmount": this.totalPrice,
+							"userId": getCookieValue("userId")
+						};
+						//2.提交订单
+						var url3 = baseUrl+"order/add";
+						axios({
+							url:url3,
+							method:"post",
+							headers:{
+								token:getCookieValue("token")
+							},
+							params:{
+								cids: this.cartIds
+							},
+							data:order
+						}).then((res)=>{
+							if(res.data.code == 10000){
+								//跳转到支付页面显示支付二维码
+								var orderInfo = res.data.data; // {orderId:"123123",productNames:"aseraer",payUrl:"weixin://...."}
+								orderInfo.totalPrice = this.totalPrice; // {orderId:"123123",productNames:"aseraer",payUrl:"weixin://....",totalPrice:18.8}
+								
+								localStorage.setItem("orderInfo",JSON.stringify(orderInfo));
+								window.location.href = "order-pay.html";
+							}else if(res.data.code == 20001 || res.data.code == 20002){
+								window.location.href = "login.html";
+							}else{
+								alert(res.data.msg);
+							}
+						});
+					},
+					gotoUserAddr:function(){
+						var orderUrl = "user-address.html?returnUrl=order-add.html&cids=" + this.cartIds;
+						window.location.href = encodeURI(orderUrl);
+					}
+				}
+			});
+			
+		</script>
+
+	</body>
+
+</html>

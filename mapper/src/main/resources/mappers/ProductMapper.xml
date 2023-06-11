@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kzh.dao.ProductMapper">
+  <resultMap id="BaseResultMap" type="com.kzh.entity.Product">
+    <id column="product_id" jdbcType="VARCHAR" property="productId" />
+    <result column="product_name" jdbcType="VARCHAR" property="productName" />
+    <result column="category_id" jdbcType="INTEGER" property="categoryId" />
+    <result column="root_category_id" jdbcType="INTEGER" property="rootCategoryId" />
+    <result column="sold_num" jdbcType="INTEGER" property="soldNum" />
+    <result column="product_status" jdbcType="INTEGER" property="productStatus" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="content" jdbcType="LONGVARCHAR" property="content" />
+  </resultMap>
+
+  <resultMap id="ProductVOMap" type="com.kzh.entity.ProductVO">
+    <id column="product_id" jdbcType="VARCHAR" property="productId" />
+    <result column="product_name" jdbcType="VARCHAR" property="productName" />
+    <result column="category_id" jdbcType="INTEGER" property="categoryId" />
+    <result column="root_category_id" jdbcType="INTEGER" property="rootCategoryId" />
+    <result column="sold_num" jdbcType="INTEGER" property="soldNum" />
+    <result column="product_status" jdbcType="INTEGER" property="productStatus" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="content" jdbcType="LONGVARCHAR" property="content" />
+    <collection property="imgs" select="com.kzh.dao.ProductImgMapper.selectProductImgByProductId" column="product_id"/>
+  </resultMap>
+
+  <select id="selectRecommendProducts" resultMap="ProductVOMap">
+    select
+      product_id,
+      product_name,
+      category_id,
+      root_category_id,
+      sold_num,
+      product_status,
+      content,
+      create_time,
+      update_time
+    from product
+    order by create_time desc
+    limit 0,3
+  </select>
+
+  <select id="selectTop6ByCategory" resultMap="ProductVOMap">
+    select product_id,
+           product_name,
+           category_id,
+           root_category_id,
+           sold_num,
+           product_status,
+           content,
+           create_time,
+           update_time
+    from product
+    where root_category_id=#{cid}
+    order by sold_num desc limit 0,6
+  </select>
+
+  <resultMap id="ProductVOMap2" type="com.kzh.entity.ProductVO">
+    <id column="product_id" jdbcType="VARCHAR" property="productId" />
+    <result column="product_name" jdbcType="VARCHAR" property="productName" />
+    <result column="category_id" jdbcType="INTEGER" property="categoryId" />
+    <result column="root_category_id" jdbcType="INTEGER" property="rootCategoryId" />
+    <result column="sold_num" jdbcType="INTEGER" property="soldNum" />
+    <result column="product_status" jdbcType="INTEGER" property="productStatus" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="content" jdbcType="LONGVARCHAR" property="content" />
+    <!--  根据商品ID查询价格最低的套餐  -->
+    <collection property="skus" column="product_id" select="com.kzh.dao.ProductSkuMapper.selectLowerestPriceByProductId"/>
+  </resultMap>
+
+  <select id="selectProductByCategoryId" resultMap="ProductVOMap2">
+    select  product_id,
+            product_name,
+            category_id,
+            root_category_id,
+            sold_num,
+            product_status,
+            content,
+            create_time,
+            update_time
+    from product
+    where category_id=#{cid}
+    limit #{start},#{limit}
+  </select>
+
+
+    <select id="selectProductByKeyword" resultMap="ProductVOMap2">
+        select  product_id,
+                product_name,
+                category_id,
+                root_category_id,
+                sold_num,
+                product_status,
+                content,
+                create_time,
+                update_time
+        from product
+        where product_name like #{kw}
+        limit #{start},#{limit}
+    </select>
+
+
+    <select id="selectBrandByCategoryId" resultSets="java.util.List" resultType="String">
+        select DISTINCT product_publisher
+        from product_params
+        where product_id in (
+            select product_id
+              from product
+              where category_id=#{cid}
+            )
+    </select>
+
+    <select id="selectBrandByKeyword" resultSets="java.util.List" resultType="String">
+        select DISTINCT product_publisher
+        from product_params
+        where product_id in (
+            select product_id
+            from product
+            where product_name like #{kw}
+        )
+    </select>
+    <select id="selectProductsByFirstCategory" resultMap="ProductVOMap">
+        select
+            product_id,
+            product_name,
+            category_id,
+            root_category_id,
+            sold_num,
+            product_status,
+            content,
+            create_time,
+            update_time
+        from product
+        order by create_time desc
+            limit 0,6
+    </select>
+
+</mapper>

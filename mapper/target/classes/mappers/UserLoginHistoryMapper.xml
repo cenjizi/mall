@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kzh.dao.UserLoginHistoryMapper">
+  <resultMap id="BaseResultMap" type="com.kzh.entity.UserLoginHistory">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="ID" jdbcType="INTEGER" property="id" />
+    <result column="AREA" jdbcType="VARCHAR" property="area" />
+    <result column="COUNTRY" jdbcType="VARCHAR" property="country" />
+    <result column="USER_ID" jdbcType="VARCHAR" property="userId" />
+    <result column="IP" jdbcType="VARCHAR" property="ip" />
+    <result column="LOGIN_TIME" jdbcType="VARCHAR" property="loginTime" />
+  </resultMap>
+</mapper>

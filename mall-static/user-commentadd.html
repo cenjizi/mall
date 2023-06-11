@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	</head>
+	<body background="white">
+		<div id="container">
+			<h4>订单信息</h4>
+			<p>订单编号:{{order.orderId}}</p>
+			<hr>
+			<ul>
+				<li v-for="item in order.orderItems">
+					<div>
+						<div style="height: 50px; background:lightgoldenrodyellow; border: 1px darkgrey; width: 600px;">
+						<img :src="'static/images/'+item.productImg" height="40">
+						{{item.productName}}
+						</div>
+						<p>
+						评价类型：<input type="radio" value="1" name="comm_type"/>好评
+								<input type="radio" value="0" name="comm_type"/>中评
+								<input type="radio" value="-1" name="comm_type"/>差评
+						</p>
+						<p>
+						是否匿名：<input type="radio" value="1" name="is_anonymous"/>匿名
+								<input type="radio" value="0" name="is_anonymous"/>不匿名
+						</p>
+						评价内容：<textarea rows="4" cols="40" name="comm_content"></textarea>
+					</div>
+					
+				</li>
+				
+			</ul>
+			
+			<input type="button" value="提交" />
+		</div>
+		<script type="text/javascript" src="static/js/vue.js" ></script>
+		<script type="text/javascript" src="static/js/axios.min.js" ></script>
+		<script type="text/javascript" src="static/js/baseUrl.js" ></script>
+		<script type="text/javascript">
+			var vm = new Vue({
+				el:"#container",
+				data:{
+					order:{}
+				},
+				created:function(){
+					//获取到订单信息
+					var jsonstr = localStorage.getItem("order");
+					if(jsonstr != null){
+						localStorage.removeItem("order");
+						this.order = eval("("+jsonstr+")");
+						console.log(this.order);
+					}
+					
+				}
+			});
+		</script>
+	</body>
+</html>

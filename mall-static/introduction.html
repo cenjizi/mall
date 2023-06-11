@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>商品页面</title>
+
+		<link href="static/css/admin.css" rel="stylesheet" type="text/css" />
+		<link href="static/css/amazeui.css" rel="stylesheet" type="text/css" />
+		<link href="static/css/demo.css" rel="stylesheet" type="text/css" />
+		<link type="text/css" href="static/css/optstyle.css" rel="stylesheet" />
+		<link type="text/css" href="static/css/style.css" rel="stylesheet" />
+		<link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+		<script type="text/javascript" src="static/js/jquery-1.7.min.js"></script>
+		<!-- 引入 layui.css -->
+		<link rel="stylesheet" href="//unpkg.com/layui@2.6.8/dist/css/layui.css">
+		
+		<!-- 引入 layui.js -->
+		<script src="//unpkg.com/layui@2.6.8/dist/layui.js"></script>
+
+		<script type="text/javascript" src="static/js/quick_links.js"></script>
+
+		<script type="text/javascript" src="static/js/amazeui.js"></script>
+		<script type="text/javascript" src="static/js/jquery.imagezoom.min.js"></script>
+		<script type="text/javascript" src="static/js/jquery.flexslider.js"></script>
+		<script type="text/javascript" src="static/js/list.js"></script>
+
+	</head>
+
+	<body>
+
+		<div id="c1">
+			<!--顶部导航条 -->
+			<div class="am-container header">
+			<ul class="message-l">
+				<div class="topMessage">
+					<div class="menu-hd" v-if="isLogin">
+						{{nickname}},欢迎您
+					</div>
+					<div class="menu-hd" v-else>
+						<a href="login.html" target="_top" class="h">亲，请登录 </a>
+						<a href="register.html" target="_top"> 免费注册</a>
+					</div>
+				</div>
+			</ul>
+			<ul class="message-r">
+				<div class="topMessage home">
+					<div class="menu-hd"><a href="index.html" target="_top" class="h">商城首页</a></div>
+				</div>
+				<div class="topMessage my-shangcheng">
+					<div class="menu-hd MyShangcheng"><a href="user-center.html" target="_top">个人中心</a></div>
+				</div>
+				<div class="topMessage mini-cart">
+					<div class="menu-hd"><a id="mc-menu-hd" href="shopcart.html" target="_top"><span>购物车</span></a></div>
+				</div>
+			</ul>
+			</div>
+
+			<!--悬浮搜索框-->
+			<div class="nav white">
+				<div class="logoBig">
+					<a href="index.html"><img src="static/images/logo.jpg" style="margin-left: 0px"></a>
+				</div>
+				<div class="search-bar pr">
+					<form action="search.html">
+						<input id="searchInput" name="index_none_header_sysc" type="text" placeholder="搜索" autocomplete="off">
+						<input id="ai-topsearch" class="submit am-btn" value="搜索" index="1" type="submit">
+					</form>
+				</div>
+			</div>
+
+			<div class="clear"></div>
+            <b class="line"></b>
+			<div class="listMain">
+
+				<!--分类-->
+			<div class="nav-table">
+			</div>
+				<ol class="am-breadcrumb am-breadcrumb-slash">
+					<li><a href="index.html">首页</a></li>
+					<li><a href="#">分类</a></li>
+					<li class="am-active">内容</li>
+				</ol>
+				<script type="text/javascript">
+					$(function() {});
+					$(window).load(function() {
+						$('.flexslider').flexslider({
+							animation: "slide",
+							start: function(slider) {
+								$('body').removeClass('loading');
+							}
+						});
+					});
+				</script>
+
+				<!--放大镜-->
+				<div class="item-inform">
+					<div class="clearfixLeft" id="clearcontent">
+
+						<div class="box">
+
+							<div class="tb-booth tb-pic tb-s310" v-if="productImgs.length>0">
+								<a><img :src="'static/images/'+productImgs[0].url" alt="细节展示放大镜特效" :rel="'static/images/'+productImgs[0].url" class="jqzoom" /></a>
+							</div>
+							<ul class="tb-thumb" id="thumblist">
+								<template v-for="img,index in productImgs">
+									<li :class="{'tb-selected':index==0}">
+										<div class="tb-pic tb-s40">
+											<a href="#"><img :src="'static/images/'+img.url" :mid="'static/images/'+img.url" :big="'static/images/'+img.url"></a>
+										</div>
+									</li>
+								</template>
+							</ul>
+						</div>
+
+						<div class="clear"></div>
+					</div>
+
+					<div class="clearfixRight">
+
+						<!--规格属性-->
+						<!--名称-->
+						<div class="tb-detail-hd">
+							<h1>
+				 			{{products[0].productName}}
+	          			</h1>
+						</div>
+						<div class="tb-detail-list">
+							<!--价格-->
+							<div class="tb-detail-price">
+								<li class="price iteminfo_price">
+									<dt>促销价</dt>
+									<dd><em>¥</em><b class="sys_item_price">{{productSkus[currentSkuIndex].sellPrice}}</b>  </dd>
+								</li>
+								<li class="price iteminfo_mktprice">
+									<dt>原价</dt>
+									<dd><em>¥</em><b class="sys_item_mktprice">{{productSkus[currentSkuIndex].originalPrice}}</b></dd>
+								</li>
+								<div class="clear"></div>
+							</div>
+
+							<!--邮费-->
+							<dl class="iteminfo_parameter freight">
+								<dt>邮费</dt>
+								<div class="iteminfo_freprice">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;包邮
+									<!-- <div class="am-form-content address">包邮 -->
+										<!-- <select data-am-selected>
+											<option value="a">浙江省</option>
+											<option value="b">湖北省</option>
+										</select> -->
+									<!-- </div> -->
+									<div class="pay-logis">
+										<!-- 快递<b class="sys_item_freprice">10</b> -->
+									</div>
+								</div>
+							</dl>
+							<div class="clear"></div>
+
+							<!--销量-->
+							<ul class="tm-ind-panel">
+								<!-- <li class="tm-ind-item tm-ind-sellCount canClick">
+									<div class="tm-indcon"><span class="tm-label">月销量</span><span class="tm-count">1015</span></div>
+								</li> -->
+								<li class="tm-ind-item tm-ind-sumCount canClick">
+									<div class="tm-indcon"><span class="tm-label">累计销量</span><span class="tm-count">{{products[0].soldNum}}</span></div>
+								</li>
+								<li class="tm-ind-item tm-ind-reviewCount canClick tm-line3">
+									<div class="tm-indcon"><span class="tm-label">累计评价</span>
+										<template v-if="!iscommon">
+											<span class="tm-count">0</span>
+										</template>
+										<template v-else>
+											<span class="tm-count">{{commontsType.count}}</span>
+										</template>
+									</div>
+								</li>
+							</ul>
+							<div class="clear"></div>
+
+							<!--各种规格-->
+							<div class="iteminfo_parameter sys_item_specpara">
+								<!-- <dt class="theme-login"><div class="cart-title">可选规格<span class="am-icon-angle-right"></span></div></dt> -->
+								<dd>
+									<!--操作页面-->
+
+									<div class="theme-popover-mask"></div>
+
+									<div class="theme-popover">
+										<div class="theme-span"></div>
+										<!-- <div class="theme-poptit">
+											<a href="javascript:;" title="关闭" class="close">×</a>
+										</div> -->
+										<div class="theme-popbod dform">
+											<form class="theme-signin" name="loginform" action="" method="post">
+
+												<div class="theme-signin-left">
+													<!-- 显示商品套餐信息 -->
+													<div v-if="productSkus.length>1" class="theme-options">
+														<div class="cart-title">套餐</div>
+														<ul>
+															<template v-for="sku,index in productSkus">
+															<!-- 如果当前套餐是正在显示的套餐，则添加选中效果 -->
+															<li v-if="index==currentSkuIndex" class="sku-line selected" :data-index="index" @click="changeSku">{{sku.skuName}}<i></i></li> 
+															<!-- 否则不添加选中效果 -->
+															<li v-else class="sku-line" :data-index="index" @click="changeSku">{{sku.skuName}}<i></i></li>
+															</template>
+														</ul>
+													</div>
+
+													<!-- 显示当前套餐下的属性 skuProps 对象/Map-->
+												<div id="props">
+													<div class="theme-options" v-for="(value,key) in skuProps">
+														<div class="cart-title">{{key}}</div>
+														<ul>
+															<template v-for="v,index in value">
+																<li :class="{'sku-line':true,'selected':index==0}" :name="key" @click="changeProp" :data-key="key" :data-v="v">{{v}}</li>
+															</template>
+														</ul>
+													</div>
+												</div>
+													<div class="theme-options">
+														<div class="cart-title number">数量</div>
+														<dd>
+															<input id="min" class="am-btn am-btn-default" type="button" value="-" @click="changeNum(-1)"/>
+															<input id="text_box" type="text" v-model="cartNum" style="width:30px;" />
+															<input id="add" class="am-btn am-btn-default" type="button" value="+" @click="changeNum(1)"/>
+															<span id="stock1" class="tb-hidden">库存<span class="stock">{{productSkus[currentSkuIndex].stock}}</span>件</span>
+														</dd>
+													</div>
+													<div class="clear"></div>
+
+													<!-- <div class="btn-op">
+														<div class="btn am-btn am-btn-warning">确认</div>
+														<div class="btn close am-btn am-btn-warning">取消</div>
+													</div> -->
+												</div>
+												<!-- <div class="theme-signin-right">
+													<div class="img-info">
+														<img src="static/images/songzi.jpg" />
+													</div>
+													<div class="text-info">
+														<span class="J_Price price-now">¥39.00</span>
+														<span id="Stock" class="tb-hidden">库存<span class="stock">1000</span>件</span>
+													</div>
+												</div> -->
+
+											</form>
+										</div>
+									</div>
+
+								</dd>
+							</dl>
+							<div class="clear"></div>
+							<!--活动	-->
+							<div class="shopPromotion gold">
+								<div class="hot">
+									<dt class="tb-metatit">商品折扣</dt>
+									<div class="gold-list">
+										<p>当前套餐享{{productSkus[currentSkuIndex].discounts*10}}折优惠</p>
+									</div>
+								</div>
+								<div class="clear"></div>
+							</div>
+						</div>
+
+						<div class="pay">
+							<!-- <div class="pay-opt"> -->
+							<!-- <a href="home.html"><span class="am-icon-home am-icon-fw">首页</span></a>
+							<a><span class="am-icon-heart am-icon-fw">收藏</span></a> -->
+							
+							<!-- </div> -->
+							<!-- <li>
+								<div class="clearfix tb-btn tb-btn-buy theme-login">
+									<a id="LikBuy" title="点此按钮到下一步确认购买信息" href="">立即购买</a>
+								</div>
+							</li> -->
+							<li>
+								<div class="clearfix tb-btn tb-btn-basket theme-login">
+									<a id="LikBasket" title="加入购物车" @click="addShopCart"><i></i>加入购物车</a>
+								</div>
+							</li>
+						</div>
+
+					</div>
+
+					<div class="clear"></div>
+
+				</div>
+
+				<div class="clear"></div>
+				
+							
+				<!-- introduce-->
+				<div class="introduce">
+					<div class="introduceMain">
+						<div class="am-tabs" data-am-tabs>
+							<ul class="am-avg-sm-3 am-tabs-nav am-nav am-nav-tabs">
+								<li class="am-active">
+									<a href="#">
+
+										<span class="index-needs-dt-txt">宝贝详情</span></a>
+
+								</li>
+
+								<li>
+									<a href="#">
+
+										<span class="index-needs-dt-txt">全部评价</span></a>
+
+								</li>
+
+								<li>
+									<a href="#">
+										<span class="index-needs-dt-txt" @click="like">猜你喜欢</span></a>
+								</li>
+							</ul>
+
+							<div class="am-tabs-bd">
+								<!-- 商品参数和细节 -->
+								<div class="am-tab-panel am-fade am-in am-active">
+									<div class="J_Brand">
+
+										<div class="attr-list-hd tm-clear">
+											<h4>产品参数：</h4></div>
+										<div class="clear"></div>
+										<ul id="J_AttrUL">
+											<li title="">店铺：&nbsp;{{productParams.productPublisher}}</li>
+											<li title="">重量：&nbsp;{{productParams.author}}</li>
+											<!-- <li title="">装帧类型：&nbsp;{{productParams.packagingMethod}}</li> -->
+											<li title="">上架日期：&nbsp;{{productParams.publicationDate}}</li>
+										</ul>
+										<div class="clear"></div>
+									</div>
+
+									<!-- <div class="details">
+										<div class="attr-list-hd after-market-hd">
+											<h4>商品细节</h4>
+										</div>
+										<div class="twlistNews" v-html="products[0].content">
+										</div>
+									</div> -->
+									<div class="clear"></div>
+								</div>
+
+								<!-- 商品评价 -->
+								<div class="am-tab-panel am-fade">
+									<template v-if="iscommon">
+                                    <div class="actor-new">
+                                    	<div class="rate">
+                                    		<strong>{{commontsType.percent}}<span>%</span></strong><br> <span>好评度</span>            
+                                    	</div>
+                                    </div>	
+                                    <div class="clear"></div>
+									<div class="tb-r-filter-bar">
+										<ul class=" tb-taglist am-avg-sm-4">
+											<li class="tb-taglist-li tb-taglist-li-current">
+												<div class="comment-info">
+													<span>全部评价</span>
+													<span class="tb-tbcr-num">{{commontsType.count}}</span>
+												</div>
+											</li>
+
+											<li class="tb-taglist-li tb-taglist-li-1">
+												<div class="comment-info">
+													<span>好评</span>
+													<span class="tb-tbcr-num">{{commontsType.goodCount}}</span>
+												</div>
+											</li>
+
+											<li class="tb-taglist-li tb-taglist-li-0">
+												<div class="comment-info">
+													<span>中评</span>
+													<span class="tb-tbcr-num">{{commontsType.midCount}}</span>
+												</div>
+											</li>
+
+											<li class="tb-taglist-li tb-taglist-li--1">
+												<div class="comment-info">
+													<span>差评</span>
+													<span class="tb-tbcr-num">{{commontsType.badCount}}</span>
+												</div>
+											</li>
+										</ul>
+									</div>
+									<div class="clear"></div>
+
+									<ul class="am-comments-list am-comments-list-flip">
+										<template v-for="co in productCommonts">
+										<li class="am-comment">
+											<!-- 评论容器 -->
+											<a href="">
+												<img class="am-comment-avatar" :src="'static/'+co.userImg" />
+												<!-- 评论者头像 -->
+											</a>
+
+											<div class="am-comment-main">
+												<!-- 评论内容容器 -->
+												<header class="am-comment-hd">
+													<!--<h3 class="am-comment-title">评论标题</h3>-->
+													<div class="am-comment-meta">
+														<!-- 评论元数据 -->
+														<a href="#link-to-user" class="am-comment-author">{{co.username.substring(0,2)+"*****"}}</a>
+														<span v-if="co.isAnonymous==1">{{co.nickname}}</span>
+														<span v-else>(匿名)</span>
+														<!-- 评论者 -->
+														<template v-if="co.commType==1">好评于</template>
+														<template v-else-if="co.commType==0">中评于</template>
+														<template v-else>差评于</template>
+														<time datetime="">{{co.sepcName.substring(0,10)}}</time>
+													</div>
+												</header>
+
+												<div class="am-comment-bd">
+													<div class="tb-rev-item " data-id="255776406962">
+														<div class="J_TbcRate_ReviewContent tb-tbcr-content ">
+															{{co.commContent}}
+														</div>
+														<!-- <div class="tb-r-act-bar">
+															{{co.productName}}
+														</div> -->
+													</div>
+													<div v-if="co.replyStatus==1" class="tb-r-act-bar">
+														<hr>
+														<label style="color: gray;font-weight: bold;">商家</label>
+														<time datetime="">回复于&nbsp;{{co.replyTime.substring(0,10)}}：</time>
+														<br/>
+														{{co.replyContent}}
+													</div>
+												</div>
+												<!-- 评论内容 -->
+											</div>
+										</li>
+										</template>
+									</ul>
+
+									<div class="clear"></div>
+
+									<!--评论分页 -->
+									<el-pagination 
+										background layout="prev, pager, next" 
+										:current-page="pageNum"
+										:page-size="limit"
+										:total="count"
+										@current-change="cp">
+									</el-pagination>
+									</template>
+								<template v-else>此商品暂无评论！</template>
+									<div class="clear"></div>
+
+								</div>
+
+								<!-- 猜你喜欢 -->
+								<div class="am-tab-panel am-fade">
+									<div class="like">
+										<ul class="am-avg-sm-2 am-avg-md-3 am-avg-lg-4 boxes">
+											<li v-for="pl in productLike">
+												<a :href="'introduction.html?pid='+pl.productId">
+													<div class="i-pic limit">
+														<img :src="'static/images/'+pl.imgs[0].url"/>
+														<p>{{pl.productName}}
+															<!-- <span>东北红松子奶油味</span></p> -->
+														<p class="price fl">
+															<b>销量：</b>
+															<strong>{{pl.soldNum}}</strong>
+														</p>
+													</div>
+												</a>
+											</li>
+										</ul>
+									</div>
+									<div class="clear"></div>
+
+									<!-- <ul class="am-pagination am-pagination-right">
+										<li class="am-disabled"><a href="#">&laquo;</a></li>
+										<li class="am-active"><a href="#">1</a></li>
+										<li><a href="#">2</a></li>
+										<li><a href="#">3</a></li>
+										<li><a href="#">4</a></li>
+										<li><a href="#">5</a></li>
+										<li><a href="#">&raquo;</a></li>
+									</ul> -->
+									<div class="clear"></div>
+
+								</div>
+
+							</div>
+
+						</div>
+
+						<div class="clear"></div>
+
+						<div class="footer">
+							<div class="footer-hd">
+								<p>
+									<a href="# ">订单</a>
+									<b>|</b>
+									<a href="# ">物流</a>
+									<b>|</b>
+									<a href="http://www.hatu.edu.cn/index.html">关于湖应</a>
+								</p>
+							</div>
+							<div class="footer-bd">
+								<p>
+									<a>版权所有，侵权必究</a>
+									<b>|</b>
+									<a>联系电话：15307426805</a>
+								</p>
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+
+			<script type="text/javascript" src="static/js/vue.js"></script>
+			<!-- 引入组件库 -->
+			<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+			<script type="text/javascript" src="static/js/axios.min.js"></script>
+			<script type="text/javascript" src="static/js/cookie_utils.js"></script>
+			<script type="text/javascript" src="static/js/baseUrl.js"></script>
+			<script type="text/javascript" src="static/js/utils.js"></script>
+			<script type="text/javascript">
+				//弹窗
+				var layer;
+				layui.use('layer', function(){
+					layer = layui.layer;
+				});
+
+				new Vue({
+					el:"#c1",
+					data:{
+						productId:"",
+						products:[],
+						productImgs:[],
+						productSkus:[],
+						currentSkuIndex:0,     //当前选中套餐的索引，默认为0
+						skuProps:{},           //相当于一个map，用于存放当前套餐的属性
+						productParams:{},
+						productCommonts:[],
+						pageHelper:[],
+						pageNum:1,
+						limit:3,
+						pageCount:0,
+						count:0,
+						commontsType:{},
+						chooseSkuProps:{},     //用于记录选择的套餐属性
+						isLogin:false,
+						username:"",
+						nickname:"",
+						cartNum:1,
+						productLike:[],        //猜你喜欢的推荐商品
+						iscommon:false         //商品是否有评论
+					},
+
+					created:function(){
+						this.productId = getUrlParam("pid");
+						this.currentSkuIndex = getUrlParam("sid") != null ? getUrlParam("sid") : 0;
+						this.cartNum = getUrlParam("num") != null ? getUrlParam("num") : 1;
+
+						//判断用户是否登录
+						var token = getCookieValue("token");
+						if(token != "" && token != null){
+							this.username = getCookieValue("username");
+							this.nickname = getCookieValue("nickname");
+							this.isLogin = true;
+						}
+						
+						//获取参数基本信息
+						var url1 = baseUrl + "product/detail-info/" + this.productId;
+						axios.get(url1).then((res)=>{
+							var map = res.data.data;
+							this.products = map.products;
+							this.productImgs = map.productImgs;
+							this.productSkus = map.productSkus;
+							//默认显示单第一个套餐的属性
+							var  str = this.productSkus[0].untitled;
+							this.skuProps = eval("("+str+")");  //将字符串转换为一个对象
+						});
+
+						//获取商品参数信息
+						var url2 = baseUrl + "product/detail-params/" + this.productId;
+						axios.get(url2).then((res)=>{
+							this.productParams = res.data.data;
+						});
+
+						//获取商品评论信息
+						var url3 = baseUrl + "product/detail-commonts/" + this.productId;
+						axios.get(url3,{
+							params:{
+								pageNum:this.pageNum,
+								limit:this.limit
+							}
+						}).then((res)=>{
+							if(res.data.code == 10001){
+								this.iscommon = false;
+							}else{
+								//如果商品有评论则显示
+								this.iscommon = true;
+								var pageHelper = res.data.data;
+								this.productCommonts = pageHelper.list;
+								this.pageCount = pageHelper.pageCount;
+								this.count = pageHelper.count;
+								// 获取商品评论统计信息
+								var url4 = baseUrl + "product/detail-type/" + this.productId;
+								axios.get(url4).then((res)=>{
+									this.commontsType = res.data.data;
+								});
+							}
+						});
+					},
+
+					// updated:function(){
+					// 	//每次重新渲染之后执行
+					// 	//初始化放大镜特效
+					// 	$(".jqzoom").imagezoom();
+					// 	$("#thumblist li a").click(function() {
+					// 		$(this).parents("li").addClass("tb-selected").siblings().removeClass("tb-selected");
+					// 		$(".jqzoom").attr('src', $(this).find("img").attr("mid"));
+					// 		$(".jqzoom").attr('rel', $(this).find("img").attr("big"));
+					// 	});
+					// },
+
+					methods:{
+						//通过选中的套餐的索引改变套餐属性
+						changeSku:function(event){
+							this.currentSkuIndex = event.srcElement.dataset.index;
+							var str = this.productSkus[this.currentSkuIndex].untitled;
+							this.skuProps = eval("("+str+")");
+						},
+
+						//评论分页：获取当前页的商品评论
+						cp:function(currentPage){
+							this.pageNum = currentPage;
+							var url3 = baseUrl + "product/detail-commonts/" + this.productId;
+							axios.get(url3,{
+								params:{
+									pageNum:this.pageNum,
+									limit:this.limit
+								}
+							}).then((res)=>{
+								var pageHelper = res.data.data;
+								this.productCommonts = pageHelper.list;
+								this.pageCount = pageHelper.pageCount;
+								this.count = pageHelper.count;
+							});
+						},
+
+						//获取选中的套餐的属性
+						changeProp:function (event) {
+							var key = event.srcElement.dataset.key;
+							var value = event.srcElement.dataset.v;
+							this.chooseSkuProps[key] = value;
+							//暂定----------------------
+							// this.cart.skuProps = '';
+							// this.cart.skuProps = this.chooseSkuProps;
+
+							//选择效果
+							$("li[name='"+key+"']").removeClass("selected")
+							//让点击的有选中效果
+							$("li[name='"+key+"'][data-v='"+value+"']").addClass("selected")
+						},
+						
+						//商品数量加减
+						changeNum:function (m) {
+							if (m==-1 && this.cartNum>1){//代表减法
+								this.cartNum = parseInt(this.cartNum) - 1;
+							}else if (m==1 && this.cartNum < this.productSkus[this.currentSkuIndex].stock) {
+								this.cartNum = parseInt(this.cartNum) + 1;
+							}
+						},
+
+						//添加商品至购物车
+						addShopCart:function(){
+							//套餐属性转字符串
+							var propStr = "";
+							for(var key in this.chooseSkuProps){
+								propStr += key + ":" + this.chooseSkuProps[key];
+								// propStr += key + ":" + this.chooseSkuProps[key] + ";";
+							}
+							// 从cookie中获取userId
+							var uid = getCookieValue("userId");
+							//如果商品数量不在库存范围内或为"",设置数量为1
+							if(this.cartNum > this.productSkus[this.currentSkuIndex].stock || this.cartNum < 1
+								|| this.cartNum == ""){
+								this.cartNum = 1;
+							}
+							this.cartNum = parseInt(this.cartNum);  //如果是小数则转为整数
+							//要添加至购物车的商品信息
+							var cart = {
+									"cartNum":this.cartNum,
+									"productId":this.productId,
+									"productPrice": this.productSkus[this.currentSkuIndex].sellPrice,
+									"skuId": this.productSkus[this.currentSkuIndex].skuId,
+									"skuProps": propStr,
+									"userId": uid
+							};
+							// 从cookie中获取token
+							var token = getCookieValue("token");
+							//添加商品至购物车
+							var url = baseUrl + "shopcart/add";
+							axios({
+								url:url,
+								method:"post",
+								headers:{
+									token:token
+								},
+								data:cart
+							}).then((res)=>{
+								var code = res.data.code
+								//处理添加购物车的回调
+								if(code == 10000){
+									layer.msg("商品添加成功");
+								}else if(code == 10001){
+									layer.msg("商品添加失败");
+								}else if(code ==10002){
+									layer.msg("购物车中已有此套餐");
+								}else{
+									var str = "";
+									if(res.data.code == 20001){
+										//用户未登录
+										str = "请先登录!";
+									}else if(res.data.code == 200002){
+										//用户登录过期
+										str = "登录过期，清重新登录！";
+									}
+									var params = "tips=" + str + "&returnUrl=introduction.html&pid="
+													+ this.productId + "&sid=" + this.currentSkuIndex
+													+ "&num=" + this.cartNum;
+									var loginUrl = "login.html?" + params;
+									window.location.href = encodeURI(loginUrl);
+								}
+							});
+						},
+
+						//获取“猜你喜欢”的6个推荐商品
+						like:function(){
+							var url5 = baseUrl + "product/like/" + this.products[0].rootCategoryId;
+							axios.get(url5).then((res)=>{
+								var p = res.data.data;
+								//过滤掉当前商品
+								this.productLike = p.filter((item) => {
+									return item.productId !== this.productId;
+								});
+							});
+						}
+					},
+
+					watch:{
+						//监听套餐属性的变化
+						skuProps:function(){
+							this.chooseSkuProps = {};
+							for(var key in this.skuProps){
+								this.chooseSkuProps[key] = this.skuProps[key][0];
+							}
+						}
+					}
+				})
+			</script>
+
+	</body>
+
+</html>

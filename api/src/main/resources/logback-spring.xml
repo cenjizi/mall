@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <appender name="stdout"
+              class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <springProfile name="dev">
+                <pattern>%d{yyyy-MM-dd-HH:mm:ss E} %level
+                    [%thread]-%class[%line]: %msg%n
+                </pattern>
+            </springProfile>
+            <springProfile name="!dev">
+                <pattern>%d{yyyy-MM-dd-HH:mm:ss E} %level
+                    [%thread]-%class[%line]: %msg%n
+                </pattern>
+            </springProfile>
+            <!--⽇志的编码格式-->
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+    <appender name="timeFile"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!--基于时间的滚动策略-->
+        <rollingPolicy
+                class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>log/log-%d{yyyy-MM-dd-HH}.log</fileNamePattern>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd-HH} %level [%thread]-
+                %class:%line>>%msg%n
+            </pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+    <appender name="fixedFile"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!--定义固定的日志文件的路径和名称-->
+        <file>log/fixedFile.log</file>
+        <!--基于内存的滚动策略-->
+        <rollingPolicy
+                class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
+            <!--达到了触发滚动的条件-->
+            <fileNamePattern>log/fixedFile%i.log</fileNamePattern>
+            <minIndex>1</minIndex>
+            <maxIndex>10</maxIndex>
+        </rollingPolicy>
+        <!--SizeBasedTriggeringPolicy-->
+        <triggeringPolicy
+                class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+            <maxFileSize>5MB</maxFileSize>
+        </triggeringPolicy>
+        <encoder>
+            <!--日志消息的输出格式-->
+            <pattern>%d{yyyy-MM-dd-HH:mm:ss.SSS} %level [%thread]-
+                %class:%line>>%msg%n
+            </pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+    <root level="info">
+        <appender-ref ref="stdout"/>
+        <appender-ref ref="timeFile"/>
+    </root>
+</configuration>

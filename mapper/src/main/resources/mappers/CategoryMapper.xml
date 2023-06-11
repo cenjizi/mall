@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kzh.dao.CategoryMapper">
+
+    <resultMap id="BaseResultMap" type="com.kzh.entity.Category">
+        <id column="category_id" jdbcType="INTEGER" property="categoryId"/>
+        <result column="category_name" jdbcType="VARCHAR" property="categoryName"/>
+        <result column="category_level" jdbcType="INTEGER" property="categoryLevel"/>
+        <result column="parent_id" jdbcType="INTEGER" property="parentId"/>
+        <result column="category_icon" jdbcType="VARCHAR" property="categoryIcon"/>
+        <result column="category_slogan" jdbcType="VARCHAR" property="categorySlogan"/>
+        <result column="category_pic" jdbcType="VARCHAR" property="categoryPic"/>
+    </resultMap>
+
+    <resultMap id="categoryVOMap" type="com.kzh.entity.CategoryVO">
+        <id column="category_id1" jdbcType="INTEGER" property="categoryId"/>
+        <result column="category_name1" jdbcType="VARCHAR" property="categoryName"/>
+        <result column="category_level1" jdbcType="INTEGER" property="categoryLevel"/>
+        <result column="parent_id1" jdbcType="INTEGER" property="parentId"/>
+        <result column="category_icon1" jdbcType="VARCHAR" property="categoryIcon"/>
+        <result column="category_slogan1" jdbcType="VARCHAR" property="categorySlogan"/>
+        <result column="category_pic1" jdbcType="VARCHAR" property="categoryPic"/>
+        <collection property="categories" ofType="com.kzh.entity.CategoryVO">
+            <id column="category_id2" jdbcType="INTEGER" property="categoryId"/>
+            <result column="category_name2" jdbcType="VARCHAR" property="categoryName"/>
+            <result column="category_level2" jdbcType="INTEGER" property="categoryLevel"/>
+            <result column="parent_id2" jdbcType="INTEGER" property="parentId"/>
+            <collection property="categories" ofType="com.kzh.entity.CategoryVO">
+                <id column="category_id3" jdbcType="INTEGER" property="categoryId"/>
+                <result column="category_name3" jdbcType="VARCHAR" property="categoryName"/>
+                <result column="category_level3" jdbcType="INTEGER" property="categoryLevel"/>
+                <result column="parent_id3" jdbcType="INTEGER" property="parentId"/>
+            </collection>
+        </collection>
+
+    </resultMap>
+
+    <!--public List<CategoryVO> selectAllCategories();-->
+    <select id="selectAllCategories" resultMap="categoryVOMap">
+        select c1.category_id       'category_id1',
+               c1.category_name     'category_name1',
+               c1.category_level    'category_level1',
+               c1.parent_id         'parent_id1',
+               c1.category_icon     'category_icon1',
+               c1.category_slogan   'category_slogan1',
+               c1.category_pic      'category_pic1',
+               c2.category_id       'category_id2',
+               c2.category_name     'category_name2',
+               c2.category_level    'category_level2',
+               c2.parent_id         'parent_id2',
+               c3.category_id       'category_id3',
+               c3.category_name     'category_name3',
+               c3.category_level    'category_level3',
+               c3.parent_id         'parent_id3'
+        from category c1
+                 inner join category c2
+                            on c2.parent_id = c1.category_id
+                 inner join category c3
+                           on c3.parent_id = c2.category_id
+        where c1.category_level = 1
+    </select>
+
+    <resultMap id="categoryVOMap2" type="com.kzh.entity.CategoryVO">
+        <id column="category_id" jdbcType="INTEGER" property="categoryId"/>
+        <result column="category_name" jdbcType="VARCHAR" property="categoryName"/>
+        <result column="category_level" jdbcType="INTEGER" property="categoryLevel"/>
+        <result column="parent_id" jdbcType="INTEGER" property="parentId"/>
+        <result column="category_icon" jdbcType="VARCHAR" property="categoryIcon"/>
+        <result column="category_slogan" jdbcType="VARCHAR" property="categorySlogan"/>
+        <result column="category_pic" jdbcType="VARCHAR" property="categoryPic"/>
+        <collection property="categories" column="category_id"
+                    select="com.kzh.dao.CategoryMapper.selectAllCategories2"/>
+    </resultMap>
+
+    <!-- 根据父级分类的id查询子级分类  -->
+    <select id="selectAllCategories2" resultMap="categoryVOMap2">
+        select category_id,
+               category_name,
+               category_level,
+               parent_id,
+               category_icon,
+               category_slogan,
+               category_pic
+        from category
+        where parent_id = #{parentId}
+    </select>
+
+
+
+    <resultMap id="categoryVOMap3" type="com.kzh.entity.CategoryVO">
+        <id column="category_id" jdbcType="INTEGER" property="categoryId"/>
+        <result column="category_name" jdbcType="VARCHAR" property="categoryName"/>
+        <result column="category_level" jdbcType="INTEGER" property="categoryLevel"/>
+        <result column="parent_id" jdbcType="INTEGER" property="parentId"/>
+        <result column="category_icon" jdbcType="VARCHAR" property="categoryIcon"/>
+        <result column="category_slogan" jdbcType="VARCHAR" property="categorySlogan"/>
+        <result column="category_pic" jdbcType="VARCHAR" property="categoryPic"/>
+        <collection property="categories" column="category_id"
+                    select="com.kzh.dao.CategoryMapper.selectAllCategories2"/>
+        <collection property="products" select="com.kzh.dao.ProductMapper.selectTop6ByCategory" column="category_id"/>
+    </resultMap>
+
+    <select id="selectFirstLevelCategories" resultMap="categoryVOMap3">
+        select category_id,
+               category_name,
+               category_level,
+               parent_id,
+               category_icon,
+               category_slogan,
+               category_pic
+        from category where category_level=1
+    </select>
+
+</mapper>

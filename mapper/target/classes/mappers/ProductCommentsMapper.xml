@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kzh.dao.ProductCommentsMapper">
+  <resultMap id="BaseResultMap" type="com.kzh.entity.ProductComments">
+    <id column="comm_id" jdbcType="VARCHAR" property="commId" />
+    <result column="product_id" jdbcType="VARCHAR" property="productId" />
+    <result column="product_name" jdbcType="VARCHAR" property="productName" />
+    <result column="order_item_id" jdbcType="VARCHAR" property="orderItemId" />
+    <result column="user_id" jdbcType="VARCHAR" property="userId" />
+    <result column="is_anonymous" jdbcType="INTEGER" property="isAnonymous" />
+    <result column="comm_type" jdbcType="INTEGER" property="commType" />
+    <result column="comm_content" jdbcType="VARCHAR" property="commContent" />
+    <result column="comm_imgs" jdbcType="VARCHAR" property="commImgs" />
+    <result column="sepc_name" jdbcType="TIMESTAMP" property="sepcName" />
+    <result column="reply_status" jdbcType="INTEGER" property="replyStatus" />
+    <result column="reply_content" jdbcType="VARCHAR" property="replyContent" />
+    <result column="reply_time" jdbcType="TIMESTAMP" property="replyTime" />
+    <result column="is_show" jdbcType="INTEGER" property="isShow" />
+  </resultMap>
+
+  <resultMap id="ProductCommentsVOMap" type="com.kzh.entity.ProductCommentsVO">
+    <id column="comm_id" jdbcType="VARCHAR" property="commId" />
+    <result column="product_id" jdbcType="VARCHAR" property="productId" />
+    <result column="product_name" jdbcType="VARCHAR" property="productName" />
+    <result column="order_item_id" jdbcType="VARCHAR" property="orderItemId" />
+    <result column="is_anonymous" jdbcType="INTEGER" property="isAnonymous" />
+    <result column="comm_type" jdbcType="INTEGER" property="commType" />
+    <result column="comm_content" jdbcType="VARCHAR" property="commContent" />
+    <result column="comm_imgs" jdbcType="VARCHAR" property="commImgs" />
+    <result column="sepc_name" jdbcType="TIMESTAMP" property="sepcName" />
+    <result column="reply_status" jdbcType="INTEGER" property="replyStatus" />
+    <result column="reply_content" jdbcType="VARCHAR" property="replyContent" />
+    <result column="reply_time" jdbcType="TIMESTAMP" property="replyTime" />
+    <result column="is_show" jdbcType="INTEGER" property="isShow" />
+
+    <result column="user_id" jdbcType="VARCHAR" property="userId" />
+    <result column="username" jdbcType="VARCHAR" property="username" />
+    <result column="nickname" jdbcType="VARCHAR" property="nickname" />
+    <result column="user_img" jdbcType="VARCHAR" property="userImg" />
+  </resultMap>
+
+  <select id="selectCommontsByProductId" resultMap="ProductCommentsVOMap">
+    select u.username,  u.nickname, u.user_img,
+      c.comm_id, c.product_id, c.product_name,
+      c.order_item_id, c.user_id, c.is_anonymous,
+      c.comm_type, c.comm_content,
+      c.comm_imgs, c.sepc_name, c.reply_status,
+      c.reply_content, c.reply_time, c.is_show
+    from product_comments c
+    INNER JOIN users u
+--     ON u.user_id = c.user_id
+    WHERE c.product_id =#{productId}
+      limit #{start},#{limit}
+  </select>
+
+</mapper>

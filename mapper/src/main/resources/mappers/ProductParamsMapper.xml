@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kzh.dao.ProductParamsMapper">
+  <resultMap id="BaseResultMap" type="com.kzh.entity.ProductParams">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="param_id" jdbcType="VARCHAR" property="paramId" />
+    <result column="product_id" jdbcType="VARCHAR" property="productId" />
+    <result column="product_publisher" jdbcType="VARCHAR" property="productPublisher" />
+    <result column="author" jdbcType="VARCHAR" property="author" />
+    <result column="packaging_method" jdbcType="VARCHAR" property="packagingMethod" />
+    <result column="publication_date" jdbcType="VARCHAR" property="publicationDate" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+</mapper>
