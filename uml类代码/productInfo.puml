@@ -1,0 +1,84 @@
+@startuml
+
+class ProductController {
+    - productService: ProductService
+    - productCommontsService: ProductCommontsService
+    + getProductInfo(pid: String): ResultVO
+    + getProductParams(pid: String): ResultVO
+    + getProductCommonts(pid: String, pageNum: int, limit: int): ResultVO
+    + getProductCommontsType(pid: String): ResultVO
+}
+
+interface ProductService {
+    + productInfo(productId: String): ResultVO
+    + productParams(productId: String): ResultVO
+}
+
+interface ProductCommontsService {
+    + productCommonts(productId: String, pageNum: int, limit: int): ResultVO
+    + productCommontsType(productId: String): ResultVO
+}
+
+class ProductServiceImpl {
+    - productMapper: ProductMapper
+    - productImgMapper: ProductImgMapper
+    - productSkuMapper: ProductSkuMapper
+    - productParamsMapper: ProductParamsMapper
+    + productInfo(productId: String): ResultVO
+    + productParams(productId: String): ResultVO
+}
+
+class ProductCommontsServiceImpl {
+    - productCommentsMapper: ProductCommentsMapper
+    + productCommonts(productId: String, pageNum: int, limit: int): ResultVO
+    + productCommontsType(productId: String): ResultVO
+}
+
+interface ProductMapper {
+    // ... mapper methods ...
+}
+
+interface ProductImgMapper {
+    // ... mapper methods ...
+}
+
+interface ProductSkuMapper {
+    // ... mapper methods ...
+}
+
+interface ProductParamsMapper {
+    // ... mapper methods ...
+}
+
+interface ProductCommentsMapper {
+    // ... mapper methods ...
+}
+
+class ResultVO {
+    - code: int
+    - msg: String
+    - data: Object
+}
+
+class PageHelper {
+    - count: int
+    - pageCount: int
+    - list: List
+}
+
+ProductController --> ProductService : productService
+ProductController --> ProductCommontsService : productCommontsService
+ProductController --> ResultVO
+ProductService --> ResultVO
+ProductServiceImpl ..|> ProductService : implements
+ProductServiceImpl --> ProductMapper : productMapper
+ProductServiceImpl --> ProductImgMapper : productImgMapper
+ProductServiceImpl --> ProductSkuMapper : productSkuMapper
+ProductServiceImpl --> ProductParamsMapper : productParamsMapper
+ProductCommontsService --> ResultVO
+ProductCommontsServiceImpl ..|> ProductCommontsService : implements
+ProductCommontsServiceImpl --> ProductCommentsMapper : productCommentsMapper
+ProductCommontsServiceImpl --> ResultVO
+ProductCommontsServiceImpl --> PageHelper
+
+@enduml

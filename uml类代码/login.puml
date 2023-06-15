@@ -1,0 +1,34 @@
+@startuml
+
+class UserController {
+    - userService: UserService
+    + login(username: String, password: String): ResultVO
+}
+
+interface UserService {
+    + checkLogin(name: String, pwd: String): ResultVO
+}
+
+class UserServiceImpl {
+    - usersMapper: UsersMapper
+    + checkLogin(name: String, pwd: String): ResultVO
+}
+
+class UsersMapper {
+// ... mapper methods ...
+}
+
+class ResultVO {
+    - code: int
+    - msg: String
+    - data: Object
+}
+
+UserController --> UserService : userService
+UserController --> ResultVO
+UserService --> ResultVO
+UserServiceImpl ..|> UserService : implements
+UserServiceImpl --> UsersMapper : usersMapper
+UserServiceImpl --> ResultVO
+
+@enduml

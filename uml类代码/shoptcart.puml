@@ -1,0 +1,46 @@
+@startuml
+
+class ShopCartController {
+    - shoppingCartService: ShoppingCartService
+    + addShoppingCart(cart: ShoppingCart, token: String): ResultVO
+    + list(userId: Integer, token: String): ResultVO
+    + updateNum(cartId: Integer, cartNum: Integer, token: String): ResultVO
+    + listByCids(cids: String, token: String): ResultVO
+    + delete(cids: String, token: String): ResultVO
+}
+
+interface ShoppingCartService {
+    + addShoppingCart(cart: ShoppingCart): ResultVO
+    + listShoppingCartsByUserId(userId: Integer): ResultVO
+    + updateCartNum(cartId: int, cartNum: int): ResultVO
+    + listShoppingCartsByCids(cids: String): ResultVO
+    + deleteByCids(cids: String): ResultVO
+}
+
+class ShoppingCartServiceImpl {
+    - shoppingCartMapper: ShoppingCartMapper
+    + addShoppingCart(cart: ShoppingCart): ResultVO
+    + listShoppingCartsByUserId(userId: Integer): ResultVO
+    + updateCartNum(cartId: int, cartNum: int): ResultVO
+    + listShoppingCartsByCids(cids: String): ResultVO
+    + deleteByCids(cids: String): ResultVO
+}
+
+interface ShoppingCartMapper {
+    // ... mapper methods ...
+}
+
+class ResultVO {
+    - code: int
+    - msg: String
+    - data: Object
+}
+
+ShopCartController --> ShoppingCartService : shoppingCartService
+ShopCartController --> ResultVO
+ShoppingCartService --> ResultVO
+ShoppingCartServiceImpl ..|> ShoppingCartService : implements
+ShoppingCartServiceImpl --> ShoppingCartMapper : shoppingCartMapper
+ShoppingCartServiceImpl --> ResultVO
+
+@enduml

@@ -125,7 +125,7 @@
 						var math = /^[A-Za-z0-9]+$/;  //只能输入数字和字母
 						if(!checkTelephone(vm.user.username)){
 							vm.tips = "请正确输入手机号！";
-						}else if(this.codeText != realCode && !math.test(this.codeText)){
+						}else if(this.codeText != realCode || !math.test(this.codeText)){
 							vm.tips = "验证码错误!";
 						}else{
 							if(vm.user.password == ""){

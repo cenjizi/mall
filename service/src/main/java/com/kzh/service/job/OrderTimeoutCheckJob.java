@@ -24,7 +24,7 @@ public class OrderTimeoutCheckJob {
 
     private WXPay wxPay = new WXPay(new MyPayConfig());
 
-    @Scheduled(cron = "0/60 * * * * ?")
+    @Scheduled(cron = "0/5 * * * * ?")
 //    @Scheduled(cron = "0 0/10 * * * ?")
     public void checkAndCloseOrder() {
         System.out.println("-------------------11");

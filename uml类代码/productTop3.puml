@@ -1,0 +1,34 @@
+@startuml
+
+class IndexController {
+    - productService: ProductService
+    + recommendProductsList(): ResultVO
+}
+
+interface ProductService {
+    + productList(): ResultVO
+}
+
+class ProductServiceImpl {
+    - productMapper: ProductMapper
+    + productList(): ResultVO
+}
+
+interface ProductMapper {
+    // ... mapper methods ...
+}
+
+class ResultVO {
+    - code: int
+    - msg: String
+    - data: Object
+}
+
+IndexController --> ProductService : productService
+IndexController --> ResultVO
+ProductService --> ResultVO
+ProductServiceImpl ..|> ProductService : implements
+ProductServiceImpl --> ProductMapper : productMapper
+ProductServiceImpl --> ResultVO
+
+@enduml

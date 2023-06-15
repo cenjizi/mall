@@ -1,0 +1,34 @@
+@startuml
+
+class IndexController {
+    - categoryService: CategoryService
+    + firstLevel(): ResultVO
+}
+
+interface CategoryService {
+    + firstProductList(): ResultVO
+}
+
+class CategoryServiceImpl {
+    - categoryMapper: CategoryMapper
+    + firstProductList(): ResultVO
+}
+
+interface CategoryMapper {
+    // ... mapper methods ...
+}
+
+class ResultVO {
+    - code: int
+    - msg: String
+    - data: Object
+}
+
+IndexController --> CategoryService : categoryService
+IndexController --> ResultVO
+CategoryService --> ResultVO
+CategoryServiceImpl ..|> CategoryService : implements
+CategoryServiceImpl --> CategoryMapper : categoryMapper
+CategoryServiceImpl --> ResultVO
+
+@enduml

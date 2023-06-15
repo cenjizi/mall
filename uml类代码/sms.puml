@@ -1,0 +1,25 @@
+@startuml
+
+class SMSController {
+    - msmService: SMSService
+}
+
+interface SMSService {
+    + send(param: Map<String, Object>, phone: String): boolean
+}
+
+class SMSServiceImpl {
+    + send(param: Map<String, Object>, phone: String): boolean
+}
+
+class ResultVO {
+    - code: int
+    - msg: String
+    - data: Object
+}
+
+SMSController --> SMSService : msmService
+SMSServiceImpl ..|> SMSService : implements
+SMSController --> ResultVO
+
+@enduml

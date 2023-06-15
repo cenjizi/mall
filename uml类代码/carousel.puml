@@ -1,0 +1,34 @@
+@startuml
+
+class IndexController {
+    - indexImgService: IndexImgService
+    + img(): ResultVO
+}
+
+interface IndexImgService {
+    + listIndexImgs(): ResultVO
+}
+
+class IndexImgServiceImpl {
+    - indexImgMapper: IndexImgMapper
+    + listIndexImgs(): ResultVO
+}
+
+interface IndexImgMapper {
+    // ... mapper methods ...
+}
+
+class ResultVO {
+    - code: int
+    - msg: String
+    - data: Object
+}
+
+IndexController --> IndexImgService : indexImgService
+IndexController --> ResultVO
+IndexImgService --> ResultVO
+IndexImgServiceImpl ..|> IndexImgService : implements
+IndexImgServiceImpl --> IndexImgMapper : indexImgMapper
+IndexImgServiceImpl --> ResultVO
+
+@enduml

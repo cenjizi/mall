@@ -23,8 +23,6 @@ import java.util.List;
 public class ShoppingCartServiceImpl implements ShoppingCartService {
     @Autowired
     private ShoppingCartMapper shoppingCartMapper;
-    @Autowired
-    private RedisTemplate redisTemplate;
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
     private Logger logger = LoggerFactory.getLogger(ShoppingCartServiceImpl.class);
 
@@ -56,11 +54,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     public ResultVO listShoppingCartsByUserId(Integer userId) {
         List<ShoppingCartVO> list = shoppingCartMapper.selectShopcartByUserId(userId);
         ResultVO resultVO;
-//        if (list.size() != 0) {
             resultVO = new ResultVO(ResStatus.OK, "购物车查询成功", list);
-//        }else {
-//            resultVO = new ResultVO(ResStatus.NO, "购物车为空", null);
-//        }
         return resultVO;
     }
 

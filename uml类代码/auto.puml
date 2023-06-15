@@ -1,0 +1,47 @@
+@startuml
+
+class UserController {
+    - userService: UserService
+    + regist(user: Users): ResultVO
+}
+
+class ResultVO {
+    - code: int
+    - msg: String
+    - data: Object
+}
+
+interface UserService {
+    + userRegister(name: String, pwd: String): ResultVO
+}
+
+class UserServiceImpl {
+    - usersMapper: UsersMapper
+    + userRegister(name: String, pwd: String): ResultVO
+}
+
+interface UsersMapper {
+}
+
+class Users {
+    - userId: Integer
+    - username: String
+    - password: String
+    - nickname: String
+    - userImg: String
+    - userMobile: String
+    - userSex: String
+    - userRegtime: Date
+    - userModtime: Date
+}
+
+UserController --> UserService : userService
+UserController --> Users : @RequestBody
+UserController --> ResultVO
+UserServiceImpl ..|> UserService : implements
+UserService --> ResultVO
+UserServiceImpl --> UsersMapper : usersMapper
+UserServiceImpl --> ResultVO
+UsersMapper --> Users
+
+@enduml

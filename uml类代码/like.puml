@@ -1,0 +1,34 @@
+@startuml
+
+class ProductController {
+    - productService: ProductService
+    + getLikeTop6(cid: Integer): ResultVO
+}
+
+interface ProductService {
+    + productsByFirstCategory(firstCategoryId: int): ResultVO
+}
+
+class ProductServiceImpl {
+    - productMapper: ProductMapper
+    + productsByFirstCategory(firstCategoryId: int): ResultVO
+}
+
+interface ProductMapper {
+    // ... mapper methods ...
+}
+
+class ResultVO {
+    - code: int
+    - message: String
+    - data: Object
+}
+
+ProductController --> ProductService : productService
+ProductServiceImpl ..|> ProductService : implements
+ProductServiceImpl --> ProductMapper : productMapper
+ProductServiceImpl --> ResultVO
+ProductController --> ResultVO
+ProductService --> ResultVO
+
+@enduml

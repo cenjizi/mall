@@ -1,0 +1,30 @@
+@startuml
+
+class PayController {
+    - orderService: OrderService
+    + paySuccess(request: HttpServletRequest): String
+}
+
+interface OrderService {
+    + updateOrderStatus(orderId: String, status: String): int
+}
+
+class OrderServiceImpl {
+    - ordersMapper: OrdersMapper
+    + updateOrderStatus(orderId: String, status: String): int
+}
+
+interface OrdersMapper {
+    // ... mapper methods ...
+}
+class WXPayUtil {
+    // ...methods ...
+}
+
+PayController --> OrderService : orderService
+PayController --> WXPayUtil
+OrderService --> OrdersMapper
+OrderServiceImpl ..|> OrderService : implements
+OrderServiceImpl --> OrdersMapper : ordersMapper
+
+@enduml

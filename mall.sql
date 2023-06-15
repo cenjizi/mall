@@ -5,13 +5,13 @@
  Source Server Type    : MySQL
  Source Server Version : 80025 (8.0.25)
  Source Host           : localhost:3306
- Source Schema         : bookstore_db
+ Source Schema         : mall
 
  Target Server Type    : MySQL
  Target Server Version : 80025 (8.0.25)
  File Encoding         : 65001
 
- Date: 11/06/2023 22:33:26
+ Date: 15/06/2023 18:36:08
 */
 
 SET NAMES utf8mb4;
@@ -135,12 +135,6 @@ CREATE TABLE `order_item`  (
 -- ----------------------------
 -- Records of order_item
 -- ----------------------------
-INSERT INTO `order_item` VALUES ('168649053773098204', '3eeda04eeffb4365b63f3b1c253cae01', '1', '衣服1', 'p1.jpg', '1', '买二送一', 1.00000000, 1, 1.00000000, '2023-06-11 21:35:38', '2023-06-11 21:35:38', 0);
-INSERT INTO `order_item` VALUES ('168649063955317700', '5d020c9bebcb40d288a0e8f6c21bd5d0', '18', '挎包1', 'p10.jpg', '35', '买二送一', 45.00000000, 10, 450.00000000, '2023-06-11 21:37:20', '2023-06-11 21:37:20', 0);
-INSERT INTO `order_item` VALUES ('168649090443030376', '1a3ee61dd7d34c6699c9aa4c77875bb0', '18', '挎包1', 'p10.jpg', '18', '买二送一', 45.00000000, 1, 45.00000000, '2023-06-11 21:41:44', '2023-06-11 21:41:44', 0);
-INSERT INTO `order_item` VALUES ('168649211518524136', '3029928d1a80474bbeb5277c3b1edd30', '18', '挎包1', 'p10.jpg', '18', '买二送一', 45.00000000, 1, 45.00000000, '2023-06-11 22:01:55', '2023-06-11 22:01:55', 0);
-INSERT INTO `order_item` VALUES ('168649289172751354', '97d08e60e892432bbc063b086ba38021', '15', '皮鞋1', 'p7.jpg', '15', '买二送一', 45.00000000, 1, 45.00000000, '2023-06-11 22:14:52', '2023-06-11 22:14:52', 0);
-INSERT INTO `order_item` VALUES ('168649318286981922', 'ae5c7b85cce74f10913994ef42baf5b2', '23', '奶茶2', 'p16.jpg', '83', '单件装', 2.00000000, 1, 2.00000000, '2023-06-11 22:19:43', '2023-06-11 22:19:43', 0);
 
 -- ----------------------------
 -- Table structure for orders
@@ -175,12 +169,6 @@ CREATE TABLE `orders`  (
 -- ----------------------------
 -- Records of orders
 -- ----------------------------
-INSERT INTO `orders` VALUES ('1a3ee61dd7d34c6699c9aa4c77875bb0', '19', '挎包1,', '匡志豪', '15307426805', '河北省 秦皇岛市 北戴河区 湖南应用技术学院东校区63栋', 45.00000000, 45, 1, '', '2', NULL, NULL, NULL, NULL, '2023-06-11 21:41:44', NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `orders` VALUES ('3029928d1a80474bbeb5277c3b1edd30', '19', '挎包1,', '匡志豪', '15307426805', '河北省 秦皇岛市 北戴河区 湖南应用技术学院东校区63栋', 45.00000000, 45, 1, '', '1', NULL, NULL, NULL, NULL, '2023-06-11 22:01:55', NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `orders` VALUES ('3eeda04eeffb4365b63f3b1c253cae01', '19', '衣服1,', '匡志豪', '15307426805', '河北省 秦皇岛市 北戴河区 湖南应用技术学院东校区63栋', 1.00000000, 1, 1, '', '2', NULL, NULL, NULL, NULL, '2023-06-11 21:35:38', NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `orders` VALUES ('5d020c9bebcb40d288a0e8f6c21bd5d0', '19', '挎包1,', '匡志豪', '15307426805', '河北省 秦皇岛市 北戴河区 湖南应用技术学院东校区63栋', 450.00000000, 450, 1, '', '2', NULL, NULL, NULL, NULL, '2023-06-11 21:37:20', NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `orders` VALUES ('97d08e60e892432bbc063b086ba38021', '19', '皮鞋1,', '匡志豪', '15307426805', '河北省 秦皇岛市 北戴河区 湖南应用技术学院东校区63栋', 45.00000000, 45, 1, '', '2', NULL, NULL, NULL, NULL, '2023-06-11 22:14:52', NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO `orders` VALUES ('ae5c7b85cce74f10913994ef42baf5b2', '19', '奶茶2,', '匡志豪', '15307426805', '河北省 秦皇岛市 北戴河区 湖南应用技术学院东校区63栋', 2.00000000, 2, 1, '', '2', NULL, NULL, NULL, NULL, '2023-06-11 22:19:43', NULL, NULL, NULL, NULL, NULL, NULL);
 
 -- ----------------------------
 -- Table structure for product
@@ -203,21 +191,21 @@ CREATE TABLE `product`  (
 -- Records of product
 -- ----------------------------
 INSERT INTO `product` VALUES ('1', '衣服1', 31, 1, 128, 1, '<img src=\"static/images/spjs.jpg\"/>', '2021-04-26 11:11:11', '2021-04-26 11:11:11');
-INSERT INTO `product` VALUES ('10', '衣服2', 31, 1, 128, 1, '<img src=\"static/images/spjs.jpg\"/>', '2021-04-26 11:11:11', '2021-04-26 11:11:11');
+INSERT INTO `product` VALUES ('10', '衣服2', 31, 1, 129, 1, '<img src=\"static/images/spjs.jpg\"/>', '2021-04-26 11:11:11', '2021-04-26 11:11:11');
 INSERT INTO `product` VALUES ('11', '衣服3', 31, 1, 201, 1, '<img src=\"static/images/spjs.jpg\"/>', '2021-04-25 15:58:59', '2021-04-25 15:59:03');
 INSERT INTO `product` VALUES ('12', '长裙1', 32, 1, 213, 1, '<img src=\"static/images/spjs.jpg\"/>', '2021-04-25 15:58:59', '2021-04-25 15:59:03');
 INSERT INTO `product` VALUES ('13', '长裙2', 32, 1, 201, 1, '<img src=\"static/images/spjs.jpg\"/>', '2021-04-25 15:58:59', '2021-04-25 15:59:03');
 INSERT INTO `product` VALUES ('14', '长裙3', 32, 1, 212, 1, '<img src=\"static/images/spjs.jpg\"/>', '2021-04-25 15:58:59', '2021-04-25 15:59:03');
-INSERT INTO `product` VALUES ('15', '皮鞋1', 33, 2, 202, 1, '<img src=\"static/images/spjs.jpg\"/>', '2021-07-25 15:58:59', '2021-04-25 15:59:03');
+INSERT INTO `product` VALUES ('15', '皮鞋1', 33, 2, 204, 1, '<img src=\"static/images/spjs.jpg\"/>', '2021-07-25 15:58:59', '2021-04-25 15:59:03');
 INSERT INTO `product` VALUES ('16', '皮鞋2', 33, 2, 201, 1, '<img src=\"static/images/spjs.jpg\"/>', '2021-04-25 15:58:59', '2021-04-25 15:59:03');
 INSERT INTO `product` VALUES ('17', '皮鞋3', 33, 2, 202, 1, '<img src=\"static/images/spjs.jpg\"/>', '2021-04-26 15:27:22', '2021-04-25 15:27:25');
 INSERT INTO `product` VALUES ('18', '挎包1', 34, 2, 112, 1, '<img src=\"static/images/spjs.jpg\"/>', '2021-06-17 15:58:59', '2021-04-25 15:59:03');
 INSERT INTO `product` VALUES ('19', '挎包2', 34, 2, 122, 1, '<img src=\"static/images/spjs.jpg\"/>', '2021-04-26 11:11:11', '2021-04-26 11:11:11');
 INSERT INTO `product` VALUES ('2', '挎包3', 34, 2, 201, 1, '<img src=\"static/images/spjs.jpg\"/>', '2021-04-25 15:58:59', '2021-04-25 15:59:03');
 INSERT INTO `product` VALUES ('20', '短袖1', 35, 3, 123, 1, '<img src=\"static/images/spjs.jpg\"/>', '2021-04-26 11:11:11', '2021-04-26 11:11:11');
-INSERT INTO `product` VALUES ('21', '短袖2', 35, 3, 124, 1, '<img src=\"static/images/spjs.jpg\"/>', '2021-10-01 11:11:11', '2021-04-26 11:11:11');
+INSERT INTO `product` VALUES ('21', '短袖2', 35, 3, 125, 1, '<img src=\"static/images/spjs.jpg\"/>', '2021-10-01 11:11:11', '2021-04-26 11:11:11');
 INSERT INTO `product` VALUES ('22', '短袖3', 35, 3, 125, 1, '<img src=\"static/images/spjs.jpg\"/>', '2021-04-26 11:11:11', '2021-04-26 11:11:11');
-INSERT INTO `product` VALUES ('23', '奶茶2', 38, 4, 202, 1, '<img src=\"static/images/spjs.jpg\"/>', '2021-04-25 15:58:59', '2021-04-25 15:59:03');
+INSERT INTO `product` VALUES ('23', '奶茶2', 38, 4, 206, 1, '<img src=\"static/images/spjs.jpg\"/>', '2021-04-25 15:58:59', '2021-04-25 15:59:03');
 INSERT INTO `product` VALUES ('24', '奶茶3', 38, 4, 201, 1, '<img src=\"static/images/spjs.jpg\"/>', '2021-04-25 15:58:59', '2021-04-25 15:59:03');
 INSERT INTO `product` VALUES ('25', '枕头1', 39, 5, 201, 1, '<img src=\"static/images/spjs.jpg\"/>', '2021-04-25 15:58:59', '2021-04-25 15:59:03');
 INSERT INTO `product` VALUES ('26', '枕头2', 39, 5, 201, 1, '<img src=\"static/images/spjs.jpg\"/>', '2021-04-25 15:58:59', '2021-04-25 15:59:03');
@@ -607,13 +595,12 @@ CREATE TABLE `shopping_cart`  (
   `product_price` decimal(32, 8) NULL DEFAULT NULL COMMENT '添加购物车时商品价格',
   `sku_props` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '选择的套餐的属性',
   PRIMARY KEY (`cart_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 99 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '购物车 ' ROW_FORMAT = COMPACT;
+) ENGINE = InnoDB AUTO_INCREMENT = 105 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '购物车 ' ROW_FORMAT = COMPACT;
 
 -- ----------------------------
 -- Records of shopping_cart
 -- ----------------------------
-INSERT INTO `shopping_cart` VALUES (96, '23', '23', '19', '1', '2023-06-11 10:19:07', 2.00000000, '包装:盒装');
-INSERT INTO `shopping_cart` VALUES (98, '23', '83', '19', '1', '2023-06-11 10:19:12', 2.00000000, '包装:袋装');
+INSERT INTO `shopping_cart` VALUES (102, '21', '21', '23', '1', '2023-06-15 03:05:36', 45.00000000, '包装:盒装');
 
 -- ----------------------------
 -- Table structure for user_addr
@@ -638,25 +625,6 @@ CREATE TABLE `user_addr`  (
 -- ----------------------------
 -- Records of user_addr
 -- ----------------------------
-INSERT INTO `user_addr` VALUES ('19', '匡志豪', '15307426805', '河北省', '秦皇岛市', '北戴河区', '湖南应用技术学院东校区63栋', 1, 0, '2023-05-18 21:17:22', '2023-05-18 21:17:22', 'bb37732aa2194d19beb60bf2f81f853a');
-
--- ----------------------------
--- Table structure for user_login_history
--- ----------------------------
-DROP TABLE IF EXISTS `user_login_history`;
-CREATE TABLE `user_login_history`  (
-  `ID` int NOT NULL AUTO_INCREMENT COMMENT 'ID',
-  `AREA` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '地区',
-  `COUNTRY` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '国家',
-  `USER_ID` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '用户id',
-  `IP` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT 'IP',
-  `LOGIN_TIME` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '时间',
-  PRIMARY KEY (`ID`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '登录历史表 ' ROW_FORMAT = COMPACT;
-
--- ----------------------------
--- Records of user_login_history
--- ----------------------------
 
 -- ----------------------------
 -- Table structure for users
@@ -673,11 +641,11 @@ CREATE TABLE `users`  (
   `user_regtime` datetime NOT NULL COMMENT '注册时间',
   `user_modtime` datetime NOT NULL COMMENT '更新时间',
   PRIMARY KEY (`user_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 23 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '用户 ' ROW_FORMAT = COMPACT;
+) ENGINE = InnoDB AUTO_INCREMENT = 24 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '用户 ' ROW_FORMAT = COMPACT;
 
 -- ----------------------------
 -- Records of users
 -- ----------------------------
-INSERT INTO `users` VALUES (19, '15307426805', '25d55ad283aa400af464c76d713c07ad', '15307426805', 'images/default.png', NULL, NULL, '2023-05-19 20:24:04', '2023-05-19 20:24:04');
+INSERT INTO `users` VALUES (23, '15307426805', '25d55ad283aa400af464c76d713c07ad', '15307426805', 'images/default.png', NULL, NULL, '2023-06-15 14:44:43', '2023-06-15 14:44:43');
 
 SET FOREIGN_KEY_CHECKS = 1;

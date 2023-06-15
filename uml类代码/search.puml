@@ -1,0 +1,41 @@
+@startuml
+
+class ProductController {
+    - productService: ProductService
+    + searchProducts(keyword: String, pageNum: int, limit: int): ResultVO
+}
+
+interface ProductService {
+    + searchProduct(kw: String, pageNum: int, limit: int): ResultVO
+}
+
+class ProductServiceImpl {
+    - productMapper: ProductMapper
+    + searchProduct(kw: String, pageNum: int, limit: int): ResultVO
+}
+
+interface ProductMapper {
+    // ... mapper methods ...
+}
+
+class ResultVO {
+    - code: int
+    - msg: String
+    - data: Object
+}
+
+class PageHelper {
+    - count: int
+    - pageCount: int
+    - list: List
+}
+
+ProductController --> ProductService : productService
+ProductController --> ResultVO
+ProductService --> ResultVO
+ProductServiceImpl ..|> ProductService : implements
+ProductServiceImpl --> ProductMapper : productMapper
+ProductServiceImpl --> ResultVO
+ProductServiceImpl --> PageHelper
+
+@enduml
