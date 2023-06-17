@@ -1,6 +1,6 @@
 # 湖应商城
 ## 1.项目介绍
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;“湖应商城”项目是一套前后端分离的电商系统，基于SpringBoot+MyBatis+Vue实现。 系统包含阿里云短信注册、登录、轮播图、商品浏览、商品搜索、购物车、微信支付、地址管理等模块。
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;该商城项目是一套前后端分离的电商系统，基于SpringBoot+MyBatis+Vue实现。 系统包含阿里云短信注册、登录、轮播图、商品浏览、商品搜索、购物车、微信支付、地址管理等模块。
 ## 2.组织结构
 
 ### 2.1系统架构图
