@@ -21,8 +21,8 @@ public class SwaggerConfig {
 
         //创建封面信息对象
         ApiInfoBuilder apiInfoBuilder = new ApiInfoBuilder();
-        apiInfoBuilder.title("《湖应商城》项目后端接口说明")
-                .description("此文档详细说明了《湖应商城》项目后端接口规范")
+        apiInfoBuilder.title("在线商城项目后端接口说明")
+                .description("此文档详细说明了在线商城项目后端接口规范")
                 .version("v 2.0.1")
                 .contact(new Contact("kzh","www.kzh.com","2059718410@qq.com"));
         ApiInfo apiInfo =  apiInfoBuilder.build();
